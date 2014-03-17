@@ -124,14 +124,15 @@ nnoremap <space> za
 nnoremap j gj
 nnoremap k gk
 
-" Run ctags in current directory
-nnoremap <C-F12> :!ctags -R .<CR>:echo "Tagged all files in the project"<CR>
-
-autocmd FileType cpp,c nnoremap <buffer> <F4> :!clang++ % -o out<CR>
-autocmd FileType cpp,c nnoremap <buffer> <F5> :!./out<CR>
-autocmd FileType cpp,c nnoremap <buffer> <F6> :!valgrind --tool=memcheck ./out 
-
+" <F4>: compile current file to ./out
+autocmd FileType cpp nnoremap <buffer> <F4> :!clang++ % -g -I /home/jonathan/.cppuseful/ -o out -std=c++11<CR>
+autocmd FileType c nnoremap <buffer> <F4> :!clang % -g -o -out -std=c11<CR>
+" <F5>: run precompiled file/script.
+autocmd FileType cpp,c nnoremap <buffer> <F5> :!./out
 autocmd FileType python nnoremap <buffer> <F5> :!python %<CR>
+" <F6>: run the precompiled file in memory checking mode
+autocmd FileType cpp,c nnoremap <buffer> <F6> :!valgrind --tool=memcheck ./out 
+autocmd FileType python nnoremap <buffer> <F6> :!python %<CR>
 
 " }
 
@@ -145,7 +146,9 @@ autocmd FileType python nnoremap <buffer> <F5> :!python %<CR>
 " }
 
 " Ctags {
-    map <C-\> :vsplit<CR>:exec("tag ".expand("<cword>"))<CR>
+    " Run ctags in current directory
+    nnoremap <C-F12> :!ctags -R .<CR>:echo "Tagged all files in the project"<CR>
+    nnoremap <C-\> :vsplit<CR>:exec("tag ".expand("<cword>"))<CR>
 " }
 
 " NerdTree {
@@ -155,6 +158,7 @@ autocmd FileType python nnoremap <buffer> <F5> :!python %<CR>
 
 " Syntastic {
     let g:syntastic_cpp_compiler = 'clang++'
+    let g:syntastic_cpp_compiler_options = ' -std=c++11 -I /home/jonathan/.cppuseful/'
 " }
 
 " }
