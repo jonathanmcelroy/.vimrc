@@ -3,30 +3,45 @@
 " }
 
 " Bundles {
+" Vundle is short for "Vim Bundle" and is a Vim plugin manager
+" To set up Vundle:
+"   git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
+" To install the plugins in this file:
+"   Open vim
+"   Execute ":BundleInstall
+
     set nocompatible
     filetype off
 
-    set rtp+=~/.vim/bundle/vundle
-    call vundle#rc()
+    if has("user_commands")
+        set rtp+=~/.vim/bundle/vundle
+        runtime autoload/vundle.vim
+    endif
+    if exists("*vundle#rc()")
+        call vundle#rc()
 
-    " Vim package mangager
-    Bundle 'gmarik/vundle'
-    " Nice colors
-    Bundle 'altercation/vim-colors-solarized'
-    " File manager in vim
-    Bundle 'scrooloose/nerdtree'
-    " Awesome status bar
-    Bundle 'bling/vim-airline'
-    " Buffer manager and file search
-    Bundle 'kien/ctrlp.vim'
-    " Syntax Checker
-    Bundle 'scrooloose/syntastic'
-    " Toggle Comments Easily
-    Bundle 'scrooloose/nerdcommenter'
-    " Python folding
-    Bundle 'tmhedberg/SimpylFold'
-    " Fancy start screen
-    Bundle 'mhinz/vim-startify'
+        " Vim package mangager
+        Bundle 'gmarik/vundle'
+        " Nice colors
+        Bundle 'altercation/vim-colors-solarized'
+        Bundle 'jonathanfilip/vim-lucius'
+        " File manager in vim
+        Bundle 'scrooloose/nerdtree'
+        " Awesome status bar
+        Bundle 'bling/vim-airline'
+        " Buffer manager and file search
+        Bundle 'kien/ctrlp.vim'
+        " Syntax Checker
+        Bundle 'scrooloose/syntastic'
+        " Toggle Comments Easily
+        Bundle 'scrooloose/nerdcommenter'
+        " Python folding
+        Bundle 'tmhedberg/SimpylFold'
+        " Fancy start screen
+        Bundle 'mhinz/vim-startify'
+        " Smart Selection
+        Bundle 'gcmt/wildfire.vim'
+    endif
 " }
 
 " General {
@@ -42,21 +57,38 @@ set history=1000                    " A lot of history
 set spell spelllang=en_us           " spelling check
 set hidden                          " Allow buffer switching without saving
 
-set undofile                        " Persistent undo
-set undolevels=1000                 " Max number of changes to save
-set undoreload=10000                " Max number of lines to save for undo on a buffer reload
+if has("persistant_undo")
+    set undofile                    " Persistent undo
+    set undodir=$HOME/.vim/undo     " Where to place the undo files
+    set undolevels=1000             " Max number of changes to save
+    set undoreload=10000            " Max number of lines to save for undo on a buffer reload
+endif
 
 set autochdir                       " Change the terminal directory whenever I open a file
+set tabpagemax=10                   " Can open up to 10 tabs
+
+"compilers {
+    if executable("clang++")
+        autocmd FileType cpp set makeprg=clang++\ %\ -g\ -I$HOME/.cppuseful/\ -o\ out\ -std=c++11
+    else
+        autocmd FileType cpp set makeprg=g++\ %\ -g\ -I$HOME/.cppuseful/\ -o\ out\ -std=c++11
+    endif
+    "autocmd FileType cpp set makeprg=g++\ %\ -lm\ -lcrypt\ -O2\ -std=c++11\ -o\ out
+
+    if executable("clang")
+        autocmd FileType c set makeprg=clang\ %\ -g\ -I$HOME/.cuseful -o\ -out\ -std=c11
+    else
+        autocmd FileType c set makeprg=gcc\ %\ -g\ -I$HOME/.cuseful -o\ -out\ -std=c11
+    endi
+" }
 
 " }
 
 " Vim UI {
 
-" Set up the solaraized theme {
-let g:solarized_termtrans=1
-let g:solarized_contrast="normal"
-let g:solarized_visibility="normal"
-colorscheme solarized
+" Set up the theme {
+"silent! colorscheme solarized
+colorscheme lucius
 " }
 
 set laststatus=2                    " always see the status line
@@ -70,7 +102,9 @@ set smartcase                       " Uppercase only matches upper
 set wildmenu                        " Auto completion menu for commands
 set wildmode=list:longest,full      " List matches, then longest common part, then all
 
-set colorcolumn=81                  " highlight everything past the 80th column
+if has("colorcolumn")
+    set colorcolumn=81                  " highlight everything past the 80th column
+endif
 set foldmethod=syntax               " fold by syntax
 
 " }
@@ -88,7 +122,7 @@ set splitbelow                      " new hsplits are below
 
 set pastetoggle=<F12>               " Sane insertion
 
-set complete+=kspell                " auto complete in comments
+"set complete+=kspell                " auto complete in comments
 
 " }
 
@@ -124,14 +158,18 @@ nnoremap <space> za
 nnoremap j gj
 nnoremap k gk
 
+" Jump to next thing in the location list. This will be the next error from
+" syntastic
+nnoremap <C-l> :lnext<CR>
+nnoremap <C-h> :ll<CR>
+
 " <F4>: compile current file to ./out
-autocmd FileType cpp nnoremap <buffer> <F4> :!clang++ % -g -I /home/jonathan/.cppuseful/ -o out -std=c++11<CR>
-autocmd FileType c nnoremap <buffer> <F4> :!clang % -g -o -out -std=c11<CR>
+autocmd FileType cpp,c nnoremap <buffer> <F4> :make<CR>
 " <F5>: run precompiled file/script.
 autocmd FileType cpp,c nnoremap <buffer> <F5> :!./out
 autocmd FileType python nnoremap <buffer> <F5> :!python %<CR>
 " <F6>: run the precompiled file in memory checking mode
-autocmd FileType cpp,c nnoremap <buffer> <F6> :!valgrind --tool=memcheck ./out 
+autocmd FileType cpp,c nnoremap <buffer> <F6> :!valgrind --tool=memcheck ./out
 autocmd FileType python nnoremap <buffer> <F6> :!python %<CR>
 
 " }
@@ -139,10 +177,10 @@ autocmd FileType python nnoremap <buffer> <F6> :!python %<CR>
 "Plugins {
 
 " Airline {
-    let g:airline_theme = 'powerlineish'
+    "let g:airline_theme = 'solarized'
+    let g:airline_theme = 'luna'
+    "let g:airline_theme = 'sol'
     let g:airline#extensions#tabline#enabled = 1
-    "let g:airline#extensions#tabline#left_sep = ' '
-    "let g:airline#extensions#tabline#left_alt_sep = '>'
 " }
 
 " Ctags {
@@ -151,14 +189,37 @@ autocmd FileType python nnoremap <buffer> <F6> :!python %<CR>
     nnoremap <C-\> :vsplit<CR>:exec("tag ".expand("<cword>"))<CR>
 " }
 
+" Ctrl-p {
+" }
+
 " NerdTree {
     map <C-e> :NERDTreeToggle<CR>:NERDTreeMirror<CR>
     let NERDTreeIgnore=['\.pyc', '\~$', '\.swo$', '\swp$', '\.git', '\.hg', '\.svn', '\.bzr']
 " }
 
 " Syntastic {
-    let g:syntastic_cpp_compiler = 'clang++'
-    let g:syntastic_cpp_compiler_options = ' -std=c++11 -I /home/jonathan/.cppuseful/'
+    if executable("clang++")
+        let g:syntastic_cpp_compiler = 'clang++'
+    else
+        let g:syntastic_cpp_compiler = 'g++'
+    endif
+    let g:syntastic_cpp_compiler_options = '-std=c++11 -I'.$HOME.'/.cppuseful/'
+    let g:syntastic_cpp_check_header = 1
+
+    if executable("clang")
+        let g:syntastic_c_compiler = 'clang'
+    else
+        let g:syntastic_c_compiler = 'gcc'
+    endi
+    let g:syntastic_c_compiler_options = '-std=c11 -I'.$HOME.'/.cuseful/'
+    let g:syntastic_c_check_header = 1
+
+    let g:syntastic_always_populate_loc_list = 1
+" }
+
+" Vim-startify {
+    let g:startify_bookmarks = ['~/.vimrc', '~/.cppuseful']
+    let g:startify_files_number = 5
 " }
 
 " }
