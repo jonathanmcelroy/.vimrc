@@ -1,6 +1,7 @@
 " Modeline and Notes {
 " vim: set sw=4 ts=4 sts=4 et tw=78 foldmarker={,} foldlevel=0 foldmethod=marker spell:
 " }
+"
 
 " Bundles {
 " Vundle is short for "Vim Bundle" and is a Vim plugin manager
