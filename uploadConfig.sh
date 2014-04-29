@@ -12,7 +12,7 @@ cp ~/.vimrc .
 cp ~/.cppuseful/ . -r
 cp ~/bin/uploadConfig.sh .
 cp ~/bin/addComments.sh .
-cp ~/bin/downleadConfig.sh .
+cp ~/bin/downloadConfig.sh .
 
 git add .
 
