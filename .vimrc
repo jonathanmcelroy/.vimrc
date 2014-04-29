@@ -23,7 +23,7 @@
         " Vim package mangager
         Bundle 'gmarik/vundle'
         " Nice colors
-        "Bundle 'altercation/vim-colors-solarized'
+        Bundle 'altercation/vim-colors-solarized'
         Bundle 'jonathanfilip/vim-lucius'
         " File manager in vim
         Bundle 'scrooloose/nerdtree'
