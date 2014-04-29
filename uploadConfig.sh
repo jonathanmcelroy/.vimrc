@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+WORKTREE=$HOME/.configuration.git/
+
+mkdir -p $WORKTREE
+
+cd $WORKTREE
+if ! git status; then
+    git clone https://github.com/jonathanmcelroy/.vimrc.git $WORKTREE
+fi
+
+cp ~/.vimrc .
+cp ~/.cppuseful/ . -r
+cp ~/bin/uploadConfig.sh .
+cp ~/bin/addComments.sh .
+cp ~/bin/downleadConfig.sh .
+
+git add .
+
+if ! git diff --cached --exit-code; then
+    git commit -m 'Updated vimrc'
+    git push
+fi
+

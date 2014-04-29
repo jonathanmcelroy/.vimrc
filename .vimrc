@@ -23,7 +23,7 @@
         " Vim package mangager
         Bundle 'gmarik/vundle'
         " Nice colors
-        Bundle 'altercation/vim-colors-solarized'
+        "Bundle 'altercation/vim-colors-solarized'
         Bundle 'jonathanfilip/vim-lucius'
         " File manager in vim
         Bundle 'scrooloose/nerdtree'
@@ -32,7 +32,7 @@
         " Buffer manager and file search
         Bundle 'kien/ctrlp.vim'
         " Syntax Checker
-        Bundle 'scrooloose/syntastic'
+        "Bundle 'scrooloose/syntastic'
         " Toggle Comments Easily
         Bundle 'scrooloose/nerdcommenter'
         " Python folding
@@ -41,6 +41,12 @@
         Bundle 'mhinz/vim-startify'
         " Smart Selection
         Bundle 'gcmt/wildfire.vim'
+        " Auto completion
+        Bundle 'Valloric/YouCompleteMe'
+        " Moving around the screen
+        Bundle 'Lokaltog/vim-easymotion'
+        " Auto formating
+        Bundle 'Chiel92/vim-autoformat'
     endif
 " }
 
@@ -57,28 +63,31 @@ set history=1000                    " A lot of history
 set spell spelllang=en_us           " spelling check
 set hidden                          " Allow buffer switching without saving
 
-if has("persistant_undo")
-    set undofile                    " Persistent undo
-    set undodir=$HOME/.vim/undo     " Where to place the undo files
-    set undolevels=1000             " Max number of changes to save
-    set undoreload=10000            " Max number of lines to save for undo on a buffer reload
-endif
+"if has("persistant_undo")
+set undofile                        " Persistent undo
+set undodir=~/.vim/undo             " Where to place the undo files
+set undolevels=1000                 " Max number of changes to save
+set undoreload=10000                " Max number of lines to save for undo on a buffer reload
+"endif
 
-set autochdir                       " Change the terminal directory whenever I open a file
+set backupdir=/tmp
+
+"set autochdir                      " Change the terminal directory whenever I move buffers
+autocmd BufEnter * silent! lcd %:p:h
 set tabpagemax=10                   " Can open up to 10 tabs
 
 "compilers {
-    if executable("clang++")
-        autocmd FileType cpp set makeprg=clang++\ %\ -g\ -I$HOME/.cppuseful/\ -o\ out\ -std=c++11
-    else
-        autocmd FileType cpp set makeprg=g++\ %\ -g\ -I$HOME/.cppuseful/\ -o\ out\ -std=c++11
-    endif
-    "autocmd FileType cpp set makeprg=g++\ %\ -lm\ -lcrypt\ -O2\ -std=c++11\ -o\ out
+    "if executable("clang++")
+        "autocmd FileType cpp set makeprg=clang++\ %\ -g\ -I$HOME/.cppuseful/\ -o\ out\ -std=c++11\ -lGL\ -lGLU\ -lglut
+    "else
+        "autocmd FileType cpp set makeprg=g++\ %\ -g\ -I$HOME/.cppuseful/\ -o\ out\ -std=c++11
+    "endif
+    autocmd FileType cpp set makeprg=make\ -f\ $HOME/.cppuseful/makefile
 
     if executable("clang")
-        autocmd FileType c set makeprg=clang\ %\ -g\ -I$HOME/.cuseful -o\ -out\ -std=c11
+        autocmd FileType c set makeprg=clang\ %\ -g\ -I$HOME/.cuseful\ -o\ out\ -std=c11
     else
-        autocmd FileType c set makeprg=gcc\ %\ -g\ -I$HOME/.cuseful -o\ -out\ -std=c11
+        autocmd FileType c set makeprg=gcc\ %\ -g\ -I$HOME/.cuseful\ -o\ out\ -std=c11
     endi
 " }
 
@@ -93,7 +102,7 @@ silent! colorscheme lucius
 
 set laststatus=2                    " always see the status line
 
-set number                          " line numbers
+"set number                          " line numbers
 set showmatch                       " Show matching brackets/parentheses
 set incsearch                       " incremental searching
 set hlsearch                        " highlight search
@@ -121,8 +130,6 @@ set splitright                      " new vsplits are to the right
 set splitbelow                      " new hsplits are below
 
 set pastetoggle=<F12>               " Sane insertion
-
-"set complete+=kspell                " auto complete in comments
 
 " }
 
@@ -159,15 +166,22 @@ nnoremap j gj
 nnoremap k gk
 
 " Jump to next thing in the location list. This will be the next error from
-" syntastic
+" syntastic/youcompleteme
 nnoremap <C-l> :lnext<CR>
 nnoremap <C-h> :ll<CR>
 
-" <F4>: compile current file to ./out
+" <F3>: compile current file to ./out
+autocmd FileType cpp,c nnoremap <buffer> <F3> :make SOURCES=%<CR>
+"autocmd FileType cpp,c nnoremap <buffer> <F3> :call MyMake(expand('%:p'))<CR>
+
+" <F4>: compile all files in directory to ./out
 autocmd FileType cpp,c nnoremap <buffer> <F4> :make<CR>
+"autocmd FileType cpp,c nnoremap <buffer> <F4> :call MyMake("")<CR>
+
 " <F5>: run precompiled file/script.
 autocmd FileType cpp,c nnoremap <buffer> <F5> :!./out
 autocmd FileType python nnoremap <buffer> <F5> :!python %<CR>
+
 " <F6>: run the precompiled file in memory checking mode
 autocmd FileType cpp,c nnoremap <buffer> <F6> :!valgrind --tool=memcheck ./out
 autocmd FileType python nnoremap <buffer> <F6> :!python %<CR>
@@ -198,28 +212,105 @@ autocmd FileType python nnoremap <buffer> <F6> :!python %<CR>
 " }
 
 " Syntastic {
-    if executable("clang++")
-        let g:syntastic_cpp_compiler = 'clang++'
-    else
-        let g:syntastic_cpp_compiler = 'g++'
-    endif
-    let g:syntastic_cpp_compiler_options = '-std=c++11 -I'.$HOME.'/.cppuseful/'
-    let g:syntastic_cpp_check_header = 1
+    "if executable("clang++")
+        "let g:syntastic_cpp_compiler = 'clang++'
+    ""else
+        ""let g:syntastic_cpp_compiler = 'g++'
+    ""endif
+    ""let g:syntastic_cpp_compiler_options = '-std=c++11 -I'.$HOME.'/.cppuseful/'
+    ""let g:syntastic_cpp_check_header = 1
 
-    if executable("clang")
-        let g:syntastic_c_compiler = 'clang'
-    else
-        let g:syntastic_c_compiler = 'gcc'
-    endi
-    let g:syntastic_c_compiler_options = '-std=c11 -I'.$HOME.'/.cuseful/'
-    let g:syntastic_c_check_header = 1
+    ""if executable("clang")
+        ""let g:syntastic_c_compiler = 'clang'
+    ""else
+        ""let g:syntastic_c_compiler = 'gcc'
+    ""endi
+    ""let g:syntastic_c_compiler_options = '-std=c11 -I'.$HOME.'/.cuseful/'
+    ""let g:syntastic_c_check_header = 1
 
-    let g:syntastic_always_populate_loc_list = 1
+    ""let g:syntastic_always_populate_loc_list = 1
+"" }
+
+" Vim-Autoformat {
+
+    let g:formatprg_cpp = "astyle"
+    let g:formatprg_args_cpp = "--style=attach
+                \ --pad-oper
+                \ --indent-col1-comments
+                \ --unpad-paren
+                \ --align-pointer=type
+                \ --align-reference=type
+                \ --break-closing-brackets
+                \ --convert-tabs 
+                \ --suffix=none"
+    "\ --break-blocks
+
+    nnoremap <leader>f :Autoformat<CR><CR>
 " }
 
 " Vim-startify {
     let g:startify_bookmarks = ['~/.vimrc', '~/.cppuseful']
     let g:startify_files_number = 5
+    let g:startify_change_to_dir = 1
 " }
+
+" YouCompleteMe {
+    let g:ycm_global_ycm_extra_conf = '/home/jonathan/.cppuseful/.ycm_extra_conf.py'
+    let g:ycm_add_preview_to_completeopt = 1
+    let g:ycm_autoclose_preview_window_after_completion = 1
+    let g:ycm_show_diagnostics_ui = 1
+    let g:ycm_always_populate_location_list = 1
+    let g:ycm_collect_identifiers_from_tags_files = 1
+" }
+
+" }
+
+" My functions {
+
+function MyMake(sources)
+    echo a:sources
+    if filereadable("makefile")
+        make
+    else
+        echo "makefile doesn't exist"
+        call CreateMakefile(fnamemodify(a:sources,":h"))
+    endif
+endfunction
+
+function CreateMakefile(directory)
+    let l:fileContents = ["CC        = clang++",
+                \"CC_FLAGS  = -Wall -g -I $(HOME)/.cppuseful/ -std=c++11",
+                \"CC_LINK   = -lGL -lGLU -lglut",
+                \"EXEC		= out",
+                \"ifndef SOURCES",
+                \"ifndef SOURCES",
+                \"SOURCES 	= $(wildcard *.cpp)",
+                \"endif",
+                \"OBJECTDIR   = objs",
+                \"OBJECTS   	= $(addprefix $(OBJECTDIR)/, $(SOURCES:.cpp=.o))",
+                \"",
+                \"# Main target",
+                \"all: $(EXEC)",
+                \"",
+                \"# all files",
+                \"$(EXEC): $(OBJECTS)",
+                \"	$(CC) $(OBJECTS) -o $(EXEC) $(CC_LINK)",
+                \"",
+                \"# To obtain object files",
+                \"$(OBJECTDIR)/%.o: %.cpp",
+                \"	$(CC) -c $(CC_FLAGS) $< -o $@",
+                \"",
+                \"# we need the directory before we can create the object files",
+                \"$(OBJECTS): | $(OBJECTDIR)",
+                \"",
+                \"$(OBJECTDIR):",
+                \"	mkdir $(OBJECTDIR)",
+                \"",
+                \"# To remove generated files",
+                \"clean:",
+                \"	rm -f $(EXEC) $(OBJECTS)"]
+    call writefile(l:fileContents, a:directory."/makefile")
+    "call append("$", "Hello World!")
+endfunction
 
 " }
