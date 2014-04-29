@@ -5,7 +5,7 @@ mkdir -p $WORKTREE
 
 cd $WORKTREE
 if ! [ -d .git ]; then
-    git clone https://github.com/jonathanmcelroy/.vimrc.git $WORKTREE
+    git clone https://github.com/jonathanmcelroy/configuration.git $WORKTREE
 fi
 
 cp ~/.vimrc .
