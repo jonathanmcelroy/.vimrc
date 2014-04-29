@@ -63,12 +63,12 @@ set history=1000                    " A lot of history
 set spell spelllang=en_us           " spelling check
 set hidden                          " Allow buffer switching without saving
 
-"if has("persistant_undo")
-set undofile                        " Persistent undo
-set undodir=~/.vim/undo             " Where to place the undo files
 set undolevels=1000                 " Max number of changes to save
-set undoreload=10000                " Max number of lines to save for undo on a buffer reload
-"endif
+if has("persistant_undo")
+    set undofile                        " Persistent undo
+    set undodir=~/.vim/undo             " Where to place the undo files
+    set undoreload=10000                " Max number of lines to save for undo on a buffer reload
+endif
 
 set backupdir=/tmp
 
@@ -96,8 +96,8 @@ set tabpagemax=10                   " Can open up to 10 tabs
 " Vim UI {
 
 " Set up the theme {
-"silent! colorscheme solarized
-silent! colorscheme lucius
+silent! colorscheme solarized
+"silent! colorscheme lucius
 " }
 
 set laststatus=2                    " always see the status line
