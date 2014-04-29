@@ -4,7 +4,7 @@ WORKTREE=$HOME/.configuration.git/
 mkdir -p $WORKTREE
 
 cd $WORKTREE
-if ! git status; then
+if ! [ -d .git ]; then
     git clone https://github.com/jonathanmcelroy/.vimrc.git $WORKTREE
 fi
 
