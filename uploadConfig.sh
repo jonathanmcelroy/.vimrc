@@ -10,6 +10,7 @@ fi
 
 cp ~/.vimrc .
 cp ~/.cppuseful/ . -r
+cp ~/.cuseful/ . -r
 cp ~/bin/uploadConfig.sh .
 cp ~/bin/addComments.sh .
 cp ~/bin/downloadConfig.sh .
