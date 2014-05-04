@@ -87,6 +87,7 @@ set tabpagemax=10                   " Can open up to 10 tabs
 "endif
 autocmd FileType cpp set makeprg=make\ -f\ $HOME/.cppuseful/makefile
 
+autocmd FileType c set makeprg=make
 if executable("clang")
     autocmd FileType c set makeprg=clang\ %\ -g\ -I$HOME/.cuseful\ -o\ out\ -std=c11
 else
@@ -184,10 +185,12 @@ autocmd FileType cpp,c nnoremap <buffer> <F4> :make<CR>
 " <F5>: run precompiled file/script.
 autocmd FileType cpp,c nnoremap <buffer> <F5> :!./out
 autocmd FileType python nnoremap <buffer> <F5> :!python %<CR>
+autocmd FileType sh nnoremap <buffer> <F5> :!bash %<CR>
 
 " <F6>: run the precompiled file in memory checking mode
 autocmd FileType cpp,c nnoremap <buffer> <F6> :!valgrind --tool=memcheck ./out
 autocmd FileType python nnoremap <buffer> <F6> :!python %<CR>
+autocmd FileType sh nnoremap <buffer> <F6> :!bash %<CR>
 
 " }
 

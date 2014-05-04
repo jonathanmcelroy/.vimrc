@@ -1,6 +1,11 @@
-#CC			= clang++
-CC			= g++
-CC_FLAGS	= -Wall -g -I $(HOME)/.cppuseful/ -std=c++11
+# if clang++ exists, use it. Other wise use g++
+SHELL = bash
+ifneq ($(shell command -v clang++),)
+CC 			= clang++
+else
+CC 			= g++
+endif
+CC_FLAGS	= -Wall -pedantic -g -I $(HOME)/.cppuseful/ -std=c++11
 CC_LINK		= -lGL -lGLU -lglut -lpthread
 
 # Filenames
