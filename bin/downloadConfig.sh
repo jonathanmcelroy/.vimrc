@@ -10,13 +10,13 @@ else
     git pull
 fi
 
-if ! [ -d $HOME/.vim/bundle/Vundle.vim ]; then
-    git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+if ! [ -d $HOME/.vim/bundle/vundle ]; then
+    git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/vundle
 fi
 
 cp .vimrc ~/.vimrc
 cp .cppuseful/ ~/.cppuseful -rf
 cp .cuseful/ ~/.cuseful -rf
-cp uploadConfig.sh ~/bin/uploadConfig.sh
-cp addComments.sh ~/bin/addComments.sh
-cp downloadConfig.sh ~/bin/downloadConfig.sh
+cp ./bin/uploadConfig.sh ~/bin/uploadConfig.sh
+cp ./bin/addComments.sh ~/bin/addComments.sh
+cp ./bin/downloadConfig.sh ~/bin/downloadConfig.sh
