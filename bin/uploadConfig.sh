@@ -11,14 +11,16 @@ fi
 cp ~/.vimrc .
 cp ~/.cppuseful/ . -r
 cp ~/.cuseful/ . -r
-cp ~/bin/uploadConfig.sh .
-cp ~/bin/addComments.sh .
-cp ~/bin/downloadConfig.sh .
 
-git add .
+mkdir -p bin
+cp ~/bin/uploadConfig.sh bin/
+cp ~/bin/addComments.sh bin/
+cp ~/bin/downloadConfig.sh bin/
 
-if ! git diff --cached --exit-code; then
-    git commit -m 'Updated vimrc'
+git add . --all
+
+if ! git diff --cached --exit-code >/dev/null; then
+    git commit -m 'Updated everything'
     git push
 fi
 

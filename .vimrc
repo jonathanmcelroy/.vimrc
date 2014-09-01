@@ -1,5 +1,5 @@
 " Modeline and Notes {
-" vim: set sw=4 ts=4 sts=4 et tw=78 foldmarker={,} foldlevel=0 foldmethod=marker spell:
+" vim: set sw=4 ts=4 sts=4 et tw=78 foldmarker={,} foldlevel=0 foldmethod=marker:
 " }
 
 " Bundles {
@@ -8,7 +8,7 @@
 "   git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
 " To install the plugins in this file:
 "   Open vim
-"   Execute ":BundleInstall
+"   Execute ":PluginInstall
 
 set nocompatible
 filetype off
@@ -17,45 +17,50 @@ if has("user_commands")
     set rtp+=~/.vim/bundle/vundle
     runtime autoload/vundle.vim
 endif
-if exists("*vundle#rc()")
-    call vundle#rc()
+if exists("*vundle#begin()")
+    call vundle#begin()
 
     " Vim package mangager
-    Bundle 'gmarik/vundle'
+    Plugin 'gmarik/vundle'
+
     " Nice colors
-    Bundle 'altercation/vim-colors-solarized'
-    Bundle 'jonathanfilip/vim-lucius'
+    "Plugin 'altercation/vim-colors-solarized'
+    "Plugin 'jonathanfilip/vim-lucius'
+
     " File manager in vim
-    Bundle 'scrooloose/nerdtree'
+    Plugin 'scrooloose/nerdtree'
+
     " Awesome status bar
-    Bundle 'bling/vim-airline'
+    Plugin 'bling/vim-airline'
+
     " Buffer manager and file search
-    Bundle 'kien/ctrlp.vim'
+    Plugin 'kien/ctrlp.vim'
+
     " Toggle Comments Easily
-    Bundle 'scrooloose/nerdcommenter'
-    " Python folding
-    Bundle 'tmhedberg/SimpylFold'
+    Plugin 'scrooloose/nerdcommenter'
+
     " Fancy start screen
-    Bundle 'mhinz/vim-startify'
+    Plugin 'mhinz/vim-startify'
+
     " Smart Selection
-    Bundle 'gcmt/wildfire.vim'
-    if v:version >= 703
-        " Auto completion
-        Bundle 'Valloric/YouCompleteMe'
-    else
-        " Syntax Checker
-        Bundle 'scrooloose/syntastic'
-    endif
+    Plugin 'gcmt/wildfire.vim'
+
+    " Syntax Checker
+    Plugin 'scrooloose/syntastic'
+
     " Moving around the screen
-    Bundle 'Lokaltog/vim-easymotion'
+    Plugin 'Lokaltog/vim-easymotion'
+
     " Auto formating
-    Bundle 'Chiel92/vim-autoformat'
+    Plugin 'Chiel92/vim-autoformat'
+
+    call vundle#end()
 endif
 " }
 
 " General {
 
-set background=dark                 " Dark background
+set background=light                " Dark background
 filetype plugin indent on           " Automatically detect file types
 syntax on                           " Syntax highlighting
 scriptencoding utf-8
@@ -63,7 +68,6 @@ scriptencoding utf-8
 set virtualedit=onemore             " Allows the cursor beyond the last character
 set history=1000                    " A lot of history
 
-set spell spelllang=en_us           " spelling check
 set hidden                          " Allow buffer switching without saving
 
 set undolevels=1000                 " Max number of changes to save
@@ -77,22 +81,11 @@ set backupdir=/tmp
 
 "set autochdir                      " Change the terminal directory whenever I move buffers
 autocmd BufEnter * silent! lcd %:p:h
-set tabpagemax=10                   " Can open up to 10 tabs
 
 "compilers {
-"if executable("clang++")
-"autocmd FileType cpp set makeprg=clang++\ %\ -g\ -I$HOME/.cppuseful/\ -o\ out\ -std=c++11\ -lGL\ -lGLU\ -lglut
-"else
-"autocmd FileType cpp set makeprg=g++\ %\ -g\ -I$HOME/.cppuseful/\ -o\ out\ -std=c++11
-"endif
 autocmd FileType cpp set makeprg=make\ -f\ $HOME/.cppuseful/makefile
-
-autocmd FileType c set makeprg=make
-if executable("clang")
-    autocmd FileType c set makeprg=clang\ %\ -g\ -I$HOME/.cuseful\ -o\ out\ -std=c11
-else
-    autocmd FileType c set makeprg=gcc\ %\ -g\ -I$HOME/.cuseful\ -o\ out\ -std=c11
-endi
+autocmd FileType c set makeprg=make\ -f\ $HOME/.cusefl/makefile
+autocmd FileType haskell set makeprg=ghc\ --make
 " }
 
 " }
@@ -100,9 +93,11 @@ endi
 " Vim UI {
 
 " Set up the theme {
-silent! colorscheme solarized
+"silent! colorscheme solarized
 "silent! colorscheme lucius
 " }
+
+set t_Co=256                        " The terminal uses 256 colors
 
 set laststatus=2                    " always see the status line
 
@@ -138,6 +133,9 @@ set pastetoggle=<F12>               " Sane insertion
 " }
 
 " Key (re)Mappings {
+
+" change the leader key
+let mapleader = ","
 
 " Shift key fixes {
 command! -bang -nargs=* -complete=file E e<bang> <args>
@@ -175,15 +173,14 @@ nnoremap <C-l> :lnext<CR>
 nnoremap <C-h> :ll<CR>
 
 " <F3>: compile current file to ./out
+autocmd FileType haskell nnoremap <buffer> <F3> :!ghc --make % -o out<CR>
 autocmd FileType cpp,c nnoremap <buffer> <F3> :make SOURCES=%<CR>
-"autocmd FileType cpp,c nnoremap <buffer> <F3> :call MyMake(expand('%:p'))<CR>
 
 " <F4>: compile all files in directory to ./out
-autocmd FileType cpp,c nnoremap <buffer> <F4> :make<CR>
-"autocmd FileType cpp,c nnoremap <buffer> <F4> :call MyMake("")<CR>
+autocmd FileType cpp,c,haskell nnoremap <buffer> <F4> :make<CR>
 
 " <F5>: run precompiled file/script.
-autocmd FileType cpp,c nnoremap <buffer> <F5> :!./out
+autocmd FileType cpp,c,haskell nnoremap <buffer> <F5> :!./out
 autocmd FileType python nnoremap <buffer> <F5> :!python %<CR>
 autocmd FileType sh nnoremap <buffer> <F5> :!bash %<CR>
 
@@ -218,23 +215,25 @@ let NERDTreeIgnore=['\.pyc', '\~$', '\.swo$', '\swp$', '\.git', '\.hg', '\.svn',
 " }
 
 " Syntastic {
-"if executable("clang++")
-"let g:syntastic_cpp_compiler = 'clang++'
-""else
-""let g:syntastic_cpp_compiler = 'g++'
-""endif
-""let g:syntastic_cpp_compiler_options = '-std=c++11 -I'.$HOME.'/.cppuseful/'
-""let g:syntastic_cpp_check_header = 1
+if executable("clang++")
+    let g:syntastic_cpp_compiler = 'clang++'
+else
+    let g:syntastic_cpp_compiler = 'g++'
+endif
+let g:syntastic_cpp_compiler_options = '-std=c++11 -I'.$HOME.'/.cppuseful/'
+let g:syntastic_cpp_check_header = 1
 
-""if executable("clang")
-""let g:syntastic_c_compiler = 'clang'
-""else
-""let g:syntastic_c_compiler = 'gcc'
-""endi
-""let g:syntastic_c_compiler_options = '-std=c11 -I'.$HOME.'/.cuseful/'
-""let g:syntastic_c_check_header = 1
+if executable("clang")
+    let g:syntastic_c_compiler = 'clang'
+else
+    let g:syntastic_c_compiler = 'gcc'
+endi
+let g:syntastic_c_compiler_options = '-std=c11 -I'.$HOME.'/.cuseful/'
+let g:syntastic_c_check_header = 1
 
-""let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_haskell_hdevtools_args = '-g -Wall -g --make'
+
+let g:syntastic_always_populate_loc_list = 1
 "" }
 
 " Vim-Autoformat {
@@ -247,7 +246,7 @@ let g:formatprg_args_cpp = "--style=attach
             \ --align-pointer=type
             \ --align-reference=type
             \ --break-closing-brackets
-            \ --convert-tabs 
+            \ --convert-tabs
             \ --suffix=none"
 "\ --break-blocks
 
@@ -261,62 +260,12 @@ let g:startify_change_to_dir = 1
 " }
 
 " YouCompleteMe {
-let g:ycm_global_ycm_extra_conf = '/home/jonathan/.cppuseful/.ycm_extra_conf.py'
-let g:ycm_add_preview_to_completeopt = 1
-let g:ycm_autoclose_preview_window_after_completion = 1
-let g:ycm_show_diagnostics_ui = 1
-let g:ycm_always_populate_location_list = 1
-let g:ycm_collect_identifiers_from_tags_files = 1
+"let g:ycm_global_ycm_extra_conf = '/home/jonathan/.cppuseful/.ycm_extra_conf.py'
+"let g:ycm_add_preview_to_completeopt = 1
+"let g:ycm_autoclose_preview_window_after_completion = 1
+"let g:ycm_show_diagnostics_ui = 1
+"let g:ycm_always_populate_location_list = 1
+"let g:ycm_collect_identifiers_from_tags_files = 1
 " }
-
-" }
-
-" My functions {
-
-function MyMake(sources)
-    echo a:sources
-    if filereadable("makefile")
-        make
-    else
-        echo "makefile doesn't exist"
-        call CreateMakefile(fnamemodify(a:sources,":h"))
-    endif
-endfunction
-
-function CreateMakefile(directory)
-    let l:fileContents = ["CC        = clang++",
-                \"CC_FLAGS  = -Wall -g -I $(HOME)/.cppuseful/ -std=c++11",
-                \"CC_LINK   = -lGL -lGLU -lglut",
-                \"EXEC		= out",
-                \"ifndef SOURCES",
-                \"ifndef SOURCES",
-                \"SOURCES 	= $(wildcard *.cpp)",
-                \"endif",
-                \"OBJECTDIR   = objs",
-                \"OBJECTS   	= $(addprefix $(OBJECTDIR)/, $(SOURCES:.cpp=.o))",
-                \"",
-                \"# Main target",
-                \"all: $(EXEC)",
-                \"",
-                \"# all files",
-                \"$(EXEC): $(OBJECTS)",
-                \"	$(CC) $(OBJECTS) -o $(EXEC) $(CC_LINK)",
-                \"",
-                \"# To obtain object files",
-                \"$(OBJECTDIR)/%.o: %.cpp",
-                \"	$(CC) -c $(CC_FLAGS) $< -o $@",
-                \"",
-                \"# we need the directory before we can create the object files",
-                \"$(OBJECTS): | $(OBJECTDIR)",
-                \"",
-                \"$(OBJECTDIR):",
-                \"	mkdir $(OBJECTDIR)",
-                \"",
-                \"# To remove generated files",
-                \"clean:",
-                \"	rm -f $(EXEC) $(OBJECTS)"]
-    call writefile(l:fileContents, a:directory."/makefile")
-    "call append("$", "Hello World!")
-endfunction
 
 " }
