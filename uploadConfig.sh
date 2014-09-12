@@ -21,6 +21,6 @@ git add .
 
 if ! git diff --cached --exit-code; then
     git commit -m 'Updated configuration'
+    git push
 fi
-git push
 
