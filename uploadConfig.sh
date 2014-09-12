@@ -11,9 +11,11 @@ fi
 cp ~/.vimrc .
 cp ~/.cppuseful/ . -r
 cp ~/.cuseful/ . -r
-cp ~/bin/uploadConfig.sh .
-cp ~/bin/addComments.sh .
-cp ~/bin/downloadConfig.sh .
+#cp ~/bin/uploadConfig.sh .
+#cp ~/bin/addComments.sh .
+#cp ~/bin/downloadConfig.sh .
+
+find $HOME/bin -perm /a+x -type f -exec cp {} . \;
 
 git add .
 
