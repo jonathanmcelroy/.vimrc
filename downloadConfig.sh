@@ -10,7 +10,7 @@ else
     git pull
 fi
 
-if ! [ -d $HOME/.vim/bundle/Vundle.vim ]; then
+if ! [ -d $HOME/.vim/bundle/vundle ]; then
     git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/vundle
 fi
 
