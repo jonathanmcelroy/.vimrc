@@ -54,6 +54,12 @@ if exists("*vundle#begin()")
     " Auto formating
     Plugin 'Chiel92/vim-autoformat'
 
+    " Haskell
+    Plugin 'bitc/vim-hdevtools'
+
+    " Edit surrounding things
+    Plugin 'tpope/vim-surround'
+
     call vundle#end()
 endif
 " }
@@ -84,8 +90,9 @@ autocmd BufEnter * silent! lcd %:p:h
 
 "compilers {
 autocmd FileType cpp set makeprg=make\ -f\ $HOME/.cppuseful/makefile
-autocmd FileType c set makeprg=make\ -f\ $HOME/.cusefl/makefile
+autocmd FileType c set makeprg=make\ -f\ $HOME/.cuseful/makefile
 autocmd FileType haskell set makeprg=ghc\ --make
+autocmd FileType java set makeprg=javac
 " }
 
 " }
@@ -173,14 +180,16 @@ nnoremap <C-l> :lnext<CR>
 nnoremap <C-h> :ll<CR>
 
 " <F3>: compile current file to ./out
-autocmd FileType haskell nnoremap <buffer> <F3> :!ghc --make % -o out<CR>
+autocmd FileType haskell nnoremap <buffer> <F3> :!ghc --make % -odir obj -hidir obj -o out<CR>
 autocmd FileType cpp,c nnoremap <buffer> <F3> :make SOURCES=%<CR>
+autocmd FileType java nnoremap <buffer> <F3> :make %<CR>
 
 " <F4>: compile all files in directory to ./out
 autocmd FileType cpp,c,haskell nnoremap <buffer> <F4> :make<CR>
 
 " <F5>: run precompiled file/script.
 autocmd FileType cpp,c,haskell nnoremap <buffer> <F5> :!./out
+autocmd FileType java nnoremap <buffer> <F5> :!java %:t:r<CR>
 autocmd FileType python nnoremap <buffer> <F5> :!python %<CR>
 autocmd FileType sh nnoremap <buffer> <F5> :!bash %<CR>
 
@@ -220,7 +229,7 @@ if executable("clang++")
 else
     let g:syntastic_cpp_compiler = 'g++'
 endif
-let g:syntastic_cpp_compiler_options = '-std=c++11 -I'.$HOME.'/.cppuseful/'
+let g:syntastic_cpp_compiler_options = '-Wall -pedantic -std=c++11 -I'.$HOME.'/.cppuseful/'
 let g:syntastic_cpp_check_header = 1
 
 if executable("clang")
@@ -228,12 +237,17 @@ if executable("clang")
 else
     let g:syntastic_c_compiler = 'gcc'
 endi
-let g:syntastic_c_compiler_options = '-std=c11 -I'.$HOME.'/.cuseful/'
+let g:syntastic_c_compiler_options = '-Wall -pedantic -std=c99 -I'.$HOME.'/.cuseful/'
 let g:syntastic_c_check_header = 1
 
 let g:syntastic_haskell_hdevtools_args = '-g -Wall -g --make'
 
 let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_jump = 1
+let g:syntastic_mode_map = { "mode": "passive" }
+
+command Ww w <BAR> SyntasticCheck
+command WW Ww
 "" }
 
 " Vim-Autoformat {
@@ -241,6 +255,7 @@ let g:syntastic_always_populate_loc_list = 1
 let g:formatprg_cpp = "astyle"
 let g:formatprg_args_cpp = "--style=attach
             \ --pad-oper
+            \ --attack-classes
             \ --indent-col1-comments
             \ --unpad-paren
             \ --align-pointer=type
@@ -249,8 +264,25 @@ let g:formatprg_args_cpp = "--style=attach
             \ --convert-tabs
             \ --suffix=none"
 "\ --break-blocks
+"
+let g:formatprg_c = "astyle"
+let g:formatprg_args_c = "--style=attach
+            \ --pad-oper
+            \ --attack-classes
+            \ --indent-col1-comments
+            \ --unpad-paren
+            \ --align-pointer=type
+            \ --align-reference=type
+            \ --break-closing-brackets
+            \ --convert-tabs
+            \ --suffix=none"
 
 nnoremap <leader>f :Autoformat<CR><CR>
+" }
+
+" Vim-Hdevtools {
+au FileType haskell nnoremap <buffer> gt :HdevtoolsType<CR>
+au FileType haskell nnoremap <buffer> gc :HdevtoolsClear<CR>
 " }
 
 " Vim-startify {
