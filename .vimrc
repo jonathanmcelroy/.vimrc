@@ -52,7 +52,9 @@ if exists("*vundle#begin()")
     Plugin 'Lokaltog/vim-easymotion'
 
     " Auto formating
-    Plugin 'Chiel92/vim-autoformat'
+    if v:version >= 703
+        Plugin 'Chiel92/vim-autoformat'
+    endif
 
     " Haskell
     Plugin 'bitc/vim-hdevtools'
