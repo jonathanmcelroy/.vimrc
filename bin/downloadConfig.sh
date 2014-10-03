@@ -17,6 +17,6 @@ fi
 cp .vimrc ~/.vimrc
 cp .cppuseful/ ~/.cppuseful -rf
 cp .cuseful/ ~/.cuseful -rf
-cp uploadConfig.sh ~/bin/uploadConfig.sh
-cp addComments.sh ~/bin/addComments.sh
-cp downloadConfig.sh ~/bin/downloadConfig.sh
+
+mkdir -p $HOME/bin
+find ./bin -perm /a+x -type f -exec cp {} $HOME/bin/ \;
