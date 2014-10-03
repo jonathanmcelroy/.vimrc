@@ -183,6 +183,8 @@ nnoremap <C-h> :ll<CR>
 autocmd FileType haskell nnoremap <buffer> <F3> :!ghc --make % -odir obj -hidir obj -o out<CR>
 autocmd FileType cpp,c nnoremap <buffer> <F3> :make SOURCES=%<CR>
 autocmd FileType java nnoremap <buffer> <F3> :make %<CR>
+autocmd FileType markdown nnoremap <buffer> <F3> :!pandoc -o "%:p:r".pdf %<CR>
+autocmd FileType tex nnoremap <buffer> <F3> :!pdflatex %<CR>
 
 " <F4>: compile all files in directory to ./out
 autocmd FileType cpp,c,haskell nnoremap <buffer> <F4> :make<CR>
