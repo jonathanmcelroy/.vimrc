@@ -13,14 +13,12 @@ cp ~/.cppuseful/ . -r
 cp ~/.cuseful/ . -r
 
 mkdir -p bin
-cp ~/bin/uploadConfig.sh bin/
-cp ~/bin/addComments.sh bin/
-cp ~/bin/downloadConfig.sh bin/
+find $HOME/bin -perm /a+x -type f -exec cp {} ./bin/ \;
 
-git add . --all
+git add .
 
-if ! git diff --cached --exit-code >/dev/null; then
-    git commit -m 'Updated everything'
+if ! git diff --cached --exit-code; then
+    git commit -m 'Updated configuration'
     git push
 fi
 

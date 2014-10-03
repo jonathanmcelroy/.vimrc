@@ -17,6 +17,6 @@ fi
 cp .vimrc ~/.vimrc
 cp .cppuseful/ ~/.cppuseful -rf
 cp .cuseful/ ~/.cuseful -rf
-cp ./bin/uploadConfig.sh ~/bin/uploadConfig.sh
-cp ./bin/addComments.sh ~/bin/addComments.sh
-cp ./bin/downloadConfig.sh ~/bin/downloadConfig.sh
+cp uploadConfig.sh ~/bin/uploadConfig.sh
+cp addComments.sh ~/bin/addComments.sh
+cp downloadConfig.sh ~/bin/downloadConfig.sh
