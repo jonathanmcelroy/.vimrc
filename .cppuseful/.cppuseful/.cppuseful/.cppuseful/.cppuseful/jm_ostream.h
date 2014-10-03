@@ -32,11 +32,11 @@ std::ostream& operator<<(std::ostream&, std::vector<T>);
 std::ostream& operator<<(std::ostream& out, std::list<int> l) {
     out << '[';
     if(l.size() > 0) {
-        if(l.front() == INF) {
+        if(*l.begin() == INF) {
             out << "-";
         }
         else {
-            out << l.front();
+            out << *l.begin();
         }
         for(auto index = ++l.begin(); index != l.end(); index++) {
             if(*index == INF) {
@@ -53,7 +53,7 @@ template <class T>
 std::ostream& operator<<(std::ostream& out, std::list<T> l) {
     out << '[';
     if(l.size() > 0) {
-        out << l.front();
+        out << *l.begin();
         for(auto index = ++l.begin(); index != l.end(); index++) {
             out << ", " << *index;
         }

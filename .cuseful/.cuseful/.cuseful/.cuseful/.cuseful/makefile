@@ -1,21 +1,15 @@
-# if clang++ exists, use it. Other wise use g++
-SHELL 		= bash
-ifneq ($(shell command -v clang++),)
-CC 			= clang++
-else
-CC 			= g++
-endif
-CC_FLAGS	= -Wall -pedantic -g -I $(HOME)/.cppuseful/ -std=c++11
-#CC_LINK		= -lGL -lGLU -lglut -lpthread
+CC			= gcc
+CC_FLAGS	= -Wall -g -I $(HOME)/.cppuseful/ -std=c99
+CC_LINK		= -lpthread
 
 # Filenames
 EXEC		= out
 ifndef SOURCES
-SOURCES 	= $(shell find . -name '*.cpp' -type f)
+SOURCES 	= $(shell find . -name '*.c' -type f)
 endif
 DIRS		= $(shell find . -type d -not -path "./obj*" -not -path ".")
 OBJECTDIR   = ./obj
-OBJECTS   	= $(addprefix $(OBJECTDIR)/, $(subst ./,, $(SOURCES:.cpp=.o)))
+OBJECTS   	= $(addprefix $(OBJECTDIR)/, $(subst ./,, $(SOURCES:.c=.o)))
 
 # all files
 $(EXEC): $(OBJECTS)
@@ -25,7 +19,7 @@ $(EXEC): $(OBJECTS)
 -include $(OBJECTS:.o=.d)
 
 # To obtain object files
-$(OBJECTDIR)/%.o: %.cpp
+$(OBJECTDIR)/%.o: %.c
 	@mkdir -p $(@D)													# create the obj/ folder
 	$(CC) -c $(CC_FLAGS) $< -o $@
 	@$(eval DFILE = $(addsuffix .d, $(basename $@)))				# a dependency file
