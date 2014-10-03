@@ -1,4 +1,4 @@
-.vimrc
+Config
 ======
 
-My .vimrc
+My system configuration
