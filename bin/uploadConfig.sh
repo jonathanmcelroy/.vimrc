@@ -16,6 +16,7 @@ mkdir -p bin
 find $HOME/bin -perm /a+x -type f -exec cp {} ./bin/ \;
 
 git add .
+git ls-files --deleted -z | xargs -0 git rm
 
 if ! git diff --cached --exit-code; then
     git commit -m 'Updated configuration'
