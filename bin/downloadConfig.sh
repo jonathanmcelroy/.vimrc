@@ -15,6 +15,7 @@ if ! [ -d $HOME/.vim/bundle/vundle ]; then
 fi
 
 cp .vimrc ~/.vimrc
+cp .zshrc ~/.zshrc
 cp .cppuseful/ ~/.cppuseful -rf
 cp .cuseful/ ~/.cuseful -rf
 

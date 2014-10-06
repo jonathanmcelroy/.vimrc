@@ -24,7 +24,7 @@ if exists("*vundle#begin()")
     Plugin 'gmarik/vundle'
 
     " Nice colors
-    "Plugin 'altercation/vim-colors-solarized'
+    Plugin 'altercation/vim-colors-solarized'
     "Plugin 'jonathanfilip/vim-lucius'
 
     " File manager in vim
@@ -68,7 +68,7 @@ endif
 
 " General {
 
-set background=light                " Dark background
+set background=dark                 " Dark background
 filetype plugin indent on           " Automatically detect file types
 syntax on                           " Syntax highlighting
 scriptencoding utf-8
@@ -102,7 +102,7 @@ autocmd FileType java set makeprg=javac
 " Vim UI {
 
 " Set up the theme {
-"silent! colorscheme solarized
+silent! colorscheme solarized
 "silent! colorscheme lucius
 " }
 

@@ -9,6 +9,7 @@ if ! [ -d .git ]; then
 fi
 
 cp ~/.vimrc .
+cp ~/.zshrc .
 cp ~/.cppuseful/ . -r
 cp ~/.cuseful/ . -r
 
