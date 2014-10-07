@@ -183,7 +183,9 @@ nnoremap <C-h> :ll<CR>
 
 " <F3>: compile current file to ./out
 autocmd FileType haskell nnoremap <buffer> <F3> :!ghc --make % -odir obj -hidir obj -o out<CR>
+let cpp11 = 1
 autocmd FileType cpp,c nnoremap <buffer> <F3> :make SOURCES=%<CR>
+autocmd FileType cpp,c nnoremap <buffer> <leader>t :call ToggleCpp11()<CR>
 autocmd FileType java nnoremap <buffer> <F3> :make %<CR>
 autocmd FileType markdown nnoremap <buffer> <F3> :!pandoc -o "%:p:r".pdf %<CR>
 autocmd FileType tex nnoremap <buffer> <F3> :!pdflatex %<CR>
@@ -241,7 +243,7 @@ if executable("clang")
 else
     let g:syntastic_c_compiler = 'gcc'
 endi
-let g:syntastic_c_compiler_options = '-Wall -pedantic -std=c99 -I'.$HOME.'/.cuseful/'
+let g:syntastic_c_compiler_options = '-Wall -pedantic -std=c11 -I'.$HOME.'/.cuseful/'
 let g:syntastic_c_check_header = 1
 
 let g:syntastic_haskell_hdevtools_args = '-g -Wall -g --make'
@@ -257,16 +259,7 @@ command WW Ww
 " Vim-Autoformat {
 
 let g:formatprg_cpp = "astyle"
-let g:formatprg_args_cpp = "--style=attach
-            \ --pad-oper
-            \ --attack-classes
-            \ --indent-col1-comments
-            \ --unpad-paren
-            \ --align-pointer=type
-            \ --align-reference=type
-            \ --break-closing-brackets
-            \ --convert-tabs
-            \ --suffix=none"
+let g:formatprg_args_cpp = "--style=java --pad-oper --indent-col1-comments --unpad-paren --align-pointer=type --break-closing-brackets --convert-tabs --suffix=none"
 "\ --break-blocks
 "
 let g:formatprg_c = "astyle"
@@ -305,3 +298,23 @@ let g:startify_change_to_dir = 1
 " }
 
 " }
+
+"Functions {
+
+function! ToggleCpp11()
+    if g:cpp11
+        nnoremap <buffer> <F3> :make SOURCES=% CPP11=<CR>
+        nnoremap <buffer> <F4> :make CPP11=<CR>
+        let g:syntastic_cpp_compiler_options = '-Wall -pedantic -I'.$HOME.'/.cppuseful/'
+        let g:syntastic_c_compiler_options = '-Wall -pedantic -std=c99 -I'.$HOME.'/.cuseful/'
+        let g:cpp11 = 0
+    else
+        nnoremap <buffer> <F3> :make SOURCES=%<CR>
+        nnoremap <buffer> <F4> :make<CR>
+        let g:syntastic_cpp_compiler_options = '-Wall -pedantic -std=c++11 -I'.$HOME.'/.cppuseful/'
+        let g:syntastic_c_compiler_options = '-Wall -pedantic -std=c11 -I'.$HOME.'/.cuseful/'
+        let g:cpp11 = 1
+    endif
+endfunction
+
+"}
