@@ -183,7 +183,6 @@ nnoremap <C-h> :ll<CR>
 
 " <F3>: compile current file to ./out
 autocmd FileType haskell nnoremap <buffer> <F3> :!ghc --make % -odir obj -hidir obj -o out<CR>
-let cpp11 = 1
 autocmd FileType cpp,c nnoremap <buffer> <F3> :make SOURCES=%<CR>
 autocmd FileType cpp,c nnoremap <buffer> <leader>t :call ToggleCpp11()<CR>
 autocmd FileType java nnoremap <buffer> <F3> :make %<CR>
@@ -246,7 +245,7 @@ endi
 let g:syntastic_c_compiler_options = '-Wall -pedantic -std=c11 -I'.$HOME.'/.cuseful/'
 let g:syntastic_c_check_header = 1
 
-let g:syntastic_haskell_hdevtools_args = '-g -Wall -g --make'
+let g:syntastic_haskell_hdevtools_args = '-g -Wall --make'
 
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_jump = 1
@@ -301,6 +300,7 @@ let g:startify_change_to_dir = 1
 
 "Functions {
 
+let cpp11 = 1
 function! ToggleCpp11()
     if g:cpp11
         nnoremap <buffer> <F3> :make SOURCES=% CPP11=<CR>
