@@ -53,6 +53,7 @@ source $ZSH/oh-my-zsh.sh
 # User configuration
 
 export PATH="/home/jonathan/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games"
+export PATH=$PATH:"$HOME/bin"
 export PATH=$PATH:"$HOME/.cabal/bin"
 # export MANPATH="/usr/local/man:$MANPATH"
 
