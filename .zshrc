@@ -82,8 +82,15 @@ export PATH=$PATH:"$HOME/.cabal/bin"
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias o="xdg-open"
-alias e="emacsclient"
+#alias e="emacsclient"
 
 #bindkey -M emacs '^j' history-beginning-search-up
 #bindkey -M emacs '^k' history-beginning-search-down
 
+# pacman aliases
+if (( $+commands[pacman] )) ; then
+    alias pacinfo='pacman -Si'
+    alias pacinstall='sudo pacman -S'
+    alias pacsearch='pacman -Ss'
+    alias pacupgrade='sudo pacman -Syu'
+fi
