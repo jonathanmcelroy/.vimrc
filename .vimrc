@@ -106,7 +106,7 @@ silent! colorscheme solarized
 "silent! colorscheme lucius
 " }
 
-"set t_Co=256                        " The terminal uses 256 colors
+set t_Co=256                        " The terminal uses 256 colors
 
 set laststatus=2                    " always see the status line
 
