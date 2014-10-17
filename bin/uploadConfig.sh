@@ -17,7 +17,10 @@ mkdir -p bin
 find $HOME/bin -perm /a+x -type f -exec cp {} ./bin/ \;
 
 git add .
-git ls-files --deleted -z | xargs -0 git rm
+DELFILES=$(git ls-files --deleted -z)
+if [ -z "$DELFILES" ]; then
+    git rm $DELFILES
+fi
 
 if ! git diff --cached --quiet; then
     git commit -m 'Updated configuration'
