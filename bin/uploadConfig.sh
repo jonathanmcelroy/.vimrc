@@ -21,6 +21,8 @@ git ls-files --deleted -z | xargs -0 git rm
 
 if ! git diff --cached --exit-code; then
     git commit -m 'Updated configuration'
+fi
+if git diff --stat origin/master; then
     git push
 fi
 
