@@ -83,7 +83,7 @@ export LANG=en_US.UTF-8
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias o="xdg-open"
-#alias e="emacsclient"
+alias e="nvim"
 
 #bindkey -M emacs '^j' history-beginning-search-up
 #bindkey -M emacs '^k' history-beginning-search-down
