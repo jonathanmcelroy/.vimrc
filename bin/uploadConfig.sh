@@ -18,8 +18,8 @@ find $HOME/bin -perm /a+x -type f -exec cp {} ./bin/ \;
 
 git add .
 DELFILES=$(git ls-files --deleted -z)
-if [ -z "$DELFILES" ]; then
-    git rm $DELFILES
+if [ ! -z "$DELFILES" ]; then
+    git rm "$DELFILES"
 fi
 
 if ! git diff --cached --quiet; then
