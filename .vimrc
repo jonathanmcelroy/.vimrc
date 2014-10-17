@@ -10,11 +10,10 @@
 "   Open vim
 "   Execute ":PluginInstall
 
-set nocompatible
 filetype off
 
 if has("user_commands")
-    set rtp+=~/.vim/bundle/vundle
+    set rtp+=~/.nvim/bundle/vundle
     runtime autoload/vundle.vim
 endif
 if exists("*vundle#begin()")
@@ -161,6 +160,9 @@ command! -bang QA qa<bang>
 " toggle search highlighting
 nnoremap <silent> <leader>/ :set invhlsearch<CR>
 
+" Make Y do the same as D, but for yanking
+nnoremap Y y$
+
 " Visual shifting
 vnoremap < <gv
 vnoremap > >gv
@@ -223,6 +225,10 @@ nnoremap <C-\> :vsplit<CR>:exec("tag ".expand("<cword>"))<CR>
 " Ctrl-p {
 " }
 
+" Eclim {
+autocmd FileType java nnoremap <buffer> <leader>3 :JavaCorrect<CR>
+" }
+
 " NerdTree {
 map <C-e> :NERDTreeToggle<CR>:NERDTreeMirror<CR>
 let NERDTreeIgnore=['\.pyc', '\~$', '\.swo$', '\swp$', '\.git', '\.hg', '\.svn', '\.bzr']
@@ -262,16 +268,10 @@ let g:formatprg_args_cpp = "--style=java --pad-oper --indent-col1-comments --unp
 "\ --break-blocks
 "
 let g:formatprg_c = "astyle"
-let g:formatprg_args_c = "--style=attach
-            \ --pad-oper
-            \ --attack-classes
-            \ --indent-col1-comments
-            \ --unpad-paren
-            \ --align-pointer=type
-            \ --align-reference=type
-            \ --break-closing-brackets
-            \ --convert-tabs
-            \ --suffix=none"
+let g:formatprg_args_c = "--style=java --pad-oper --indent-col1-comments --unpad-paren --align-pointer=type --break-closing-brackets --convert-tabs --suffix=none"
+
+let g:formatprg_java = "astyle"
+let g:formatprg_args_java = "--style=java --pad-oper --indent-col1-comments --unpad-paren --align-pointer=type --break-closing-brackets --convert-tabs --suffix=none"
 
 nnoremap <leader>f :Autoformat<CR><CR>
 " }
@@ -282,7 +282,7 @@ au FileType haskell nnoremap <buffer> gc :HdevtoolsClear<CR>
 " }
 
 " Vim-startify {
-let g:startify_bookmarks = ['~/.vimrc', '~/.cppuseful']
+let g:startify_bookmarks = ['~/.nvimrc', '~/.vimrc', '~/.cppuseful']
 let g:startify_files_number = 5
 let g:startify_change_to_dir = 1
 " }
@@ -299,6 +299,18 @@ let g:startify_change_to_dir = 1
 " }
 
 "Functions {
+
+function EasyToCpp11()
+    " I don't like using parens around control statments
+
+    " If
+    %substitute/\(\<if\>\s*(.*)\s*{\)\@!\<if\>\s*\(.\{-}\)\s*{/if(\2) {/gce
+    %substitute/\(\<while\>\s*(.*)\s*{\)\@!\<while\>\s*\(.\{-}\)\s*{/while(\2) {/gce
+endfunction
+
+function ForEachToFor()
+    %substitute/\<for\>\s*(\s*\(\w\+\)\s*\(\w\+\)\s*:\s*\(\w\+\)\s*)\s*{/for(\1 \2 = \3.begin(); \2 != \3.end(); \2++) {/gce
+endfunction
 
 let cpp11 = 1
 function! ToggleCpp11()
