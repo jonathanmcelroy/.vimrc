@@ -16,8 +16,8 @@ fi
 
 cp .vimrc ~/.vimrc
 cp .zshrc ~/.zshrc
-cp .cppuseful/ ~/.cppuseful
-cp .cuseful/ ~/.cuseful
+cp .cppuseful/ ~/.cppuseful -rf
+cp .cuseful/ ~/.cuseful -rf
 
 mkdir -p $HOME/bin
 find ./bin -perm /a+x -type f -exec cp {} $HOME/bin/ \;
