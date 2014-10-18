@@ -6,55 +6,88 @@
 
 " Plug is a Vim plugin manager
 " To install Plug:
-"   mkdir -p ~/.vim/autoload
-"   curl -fLo ~/.vim/autoload/plug.vim https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+"   mkdir -p ~/.nvim/autoload
+"   curl -fLo ~/.nvim/autoload/plug.vim https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 " To install the plugins in this file:
 "   Open vim or nvim
 "   Execute :PlugInstall
 
-call plug#begin('~/.vim/plugged')
+let s:plugins=filereadable(expand("~/.vim/autoload/plug.vim", 1))
 
-" Nice colors
-Plug 'altercation/vim-colors-solarized'
-"Plug 'jonathanfilip/vim-lucius'
+if !s:plugins "{{{
+    function! InstallPlug() "bootstrap plug.vim on new systems
+        silent call mkdir(expand("~/.nvim/autoload", 1), 'p')
+        exe '!curl -fLo '.expand("~/.nvim/autoload/plug.vim", 1).' https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+        " Line 889 is a bug. Replace with "if 1"
+    endfunction
+    "}}}
+else "{{{
+    call plug#begin('~/.nvim/plugged')
 
-" File manager in vim
-Plug 'scrooloose/nerdtree'
+    " UI {{{
 
-" Awesome status bar
-Plug 'bling/vim-airline'
+    " Nice colors
+    Plug 'altercation/vim-colors-solarized'
+    Plug 'jonathanfilip/vim-lucius'
+    Plug 'junegunn/seoul256.vim'
+    Plug 'john2x/flatui.vim'
 
-" Buffer manager and file search
-Plug 'kien/ctrlp.vim'
+    " Fancy start screen
+    Plug 'mhinz/vim-startify'
 
-" Toggle Comments Easily
-Plug 'scrooloose/nerdcommenter'
 
-" Fancy start screen
-Plug 'mhinz/vim-startify'
+    " Awesome status bar
+    Plug 'bling/vim-airline'
 
-" Smart Selection
-Plug 'gcmt/wildfire.vim'
+    " }}}
 
-" Syntax Checker
-Plug 'scrooloose/syntastic'
+    " Files {{{
 
-" Moving around the screen
-Plug 'Lokaltog/vim-easymotion'
+    " File manager in vim
+    Plug 'scrooloose/nerdtree'
 
-" Auto formating
-if v:version >= 703
+    " Buffer manager and file search
+    Plug 'kien/ctrlp.vim'
+
+    " }}}
+
+    " General Code {{{
+
+    " Git
+    Plug 'tpope/vim-fugitive'
+    Plug 'airblade/vim-gitgutter'
+
+    " Syntax Checker
+    Plug 'scrooloose/syntastic'
+
+    " Moving around the screen
+    Plug 'Lokaltog/vim-easymotion'
+
+    " Auto formating
     Plug 'Chiel92/vim-autoformat'
+
+    " Smart Selection
+    Plug 'gcmt/wildfire.vim'
+
+    " Toggle Comments Easily
+    Plug 'scrooloose/nerdcommenter'
+
+    " Edit surrounding things
+    Plug 'tpope/vim-surround'
+
+    " }}}
+
+    " Haskell {{{
+
+    " Syntax checking
+    Plug 'bitc/vim-hdevtools', { 'for' : 'haskell' }
+
+    " }}}
+
+    call plug#end()
 endif
+" }}}
 
-" Haskell
-Plug 'bitc/vim-hdevtools'
-
-" Edit surrounding things
-Plug 'tpope/vim-surround'
-
-call plug#end()
-"endif
 " }}}
 
 " General {{{
@@ -93,8 +126,9 @@ autocmd FileType java set makeprg=javac
 " Vim UI {{{
 
 " Set up the theme {{{
-silent! colorscheme solarized
+"silent! colorscheme solarized
 "silent! colorscheme lucius
+silent! colorscheme seoul256
 " }}}
 
 set t_Co=256                        " The terminal uses 256 colors
@@ -175,18 +209,16 @@ nnoremap k gk
 nnoremap <C-l> :lnext<CR>
 nnoremap <C-h> :ll<CR>
 
-" Switch between c++98 and c++11
-autocmd FileType cpp,c nnoremap <buffer> <leader>t :call ToggleCpp11()<CR>
-
 " <F3>: compile current file to ./out
 autocmd FileType haskell nnoremap <buffer> <F3> :!ghc --make % -odir obj -hidir obj -o out<CR>
 autocmd FileType cpp,c nnoremap <buffer> <F3> :make SOURCES=%<CR>
+autocmd FileType cpp,c nnoremap <buffer> <leader>t :call ToggleCpp11()<CR>
 autocmd FileType java nnoremap <buffer> <F3> :make %<CR>
 autocmd FileType markdown nnoremap <buffer> <F3> :!pandoc -o "%:p:r".pdf %<CR>
 autocmd FileType tex nnoremap <buffer> <F3> :!pdflatex %<CR>
 
 " <F4>: compile all files in directory to ./out
-autocmd FileType cpp,c nnoremap <buffer> <F4> :make<CR>
+autocmd FileType cpp,c,haskell nnoremap <buffer> <F4> :make<CR>
 
 " <F5>: run precompiled file/script.
 autocmd FileType cpp,c,haskell nnoremap <buffer> <F5> :!./out
@@ -201,7 +233,7 @@ autocmd FileType sh nnoremap <buffer> <F6> :!bash %<CR>
 
 " }}}
 
-"Plugins {{{
+" Plugins {{{
 
 " Airline {{{
 "let g:airline_theme = 'solarized'
@@ -212,7 +244,8 @@ let g:airline#extensions#tabline#enabled = 1
 
 " Ctags {{{
 " Run ctags in current directory
-nnoremap <C-F12> :!ctags -R .<CR>:echo "Tagged all files in the project"<CR>
+"nnoremap <C-F12> :!ctags -R .<CR>:echo "Tagged all files in the project"<CR>
+nnoremap <leader>tag :!ctags -R .<CR>
 nnoremap <C-\> :vsplit<CR>:exec("tag ".expand("<cword>"))<CR>
 " }}}
 
@@ -294,11 +327,13 @@ let g:startify_change_to_dir = 1
 
 "Functions {{{
 
-"function EasyToCpp11()
+function EasyToCpp11()
     " I don't like using parens around control statments
-    "%substitute/\(\<if\>\s*(.*)\s*{\)\@!\<if\>\s*\(.\{-}\)\s*{/if(\2) {/gce
-    "%substitute/\(\<while\>\s*(.*)\s*{\)\@!\<while\>\s*\(.\{-}\)\s*{/while(\2) {/gce
-"endfunction
+
+    " If
+    %substitute/\(\<if\>\s*(.*)\s*{\)\@!\<if\>\s*\(.\{-}\)\s*{/if(\2) {/gce
+    %substitute/\(\<while\>\s*(.*)\s*{\)\@!\<while\>\s*\(.\{-}\)\s*{/while(\2) {/gce
+endfunction
 
 function ForEachToFor()
     %substitute/\<for\>\s*(\s*\(\w\+\)\s*\(\w\+\)\s*:\s*\(\w\+\)\s*)\s*{/for(\1 \2 = \3.begin(); \2 != \3.end(); \2++) {/gce
@@ -321,4 +356,4 @@ function! ToggleCpp11()
     endif
 endfunction
 
-"}
+" }}}
