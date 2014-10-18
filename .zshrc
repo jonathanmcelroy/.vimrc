@@ -84,6 +84,7 @@ export LANG=en_US.UTF-8
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias o="xdg-open"
 alias e="nvim"
+alias vim="nvim"
 
 #bindkey -M emacs '^j' history-beginning-search-up
 #bindkey -M emacs '^k' history-beginning-search-down
@@ -95,3 +96,8 @@ if (( $+commands[pacman] )) ; then
     alias pacsearch='pacman -Ss'
     alias pacupgrade='sudo pacman -Syu'
 fi
+
+# 256 colors
+case "$TERM" in
+    xterm*) TERM=xterm-256color
+esac 
