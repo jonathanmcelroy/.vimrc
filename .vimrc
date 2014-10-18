@@ -1,71 +1,63 @@
-" Modeline and Notes {
-" vim: set sw=4 ts=4 sts=4 et tw=78 foldmarker={,} foldlevel=0 foldmethod=marker:
-" }
+" Modeline and Notes {{{
+" vim: set sw=4 ts=4 sts=4 et tw=78 foldmarker={{{,}}} foldlevel=0 foldmethod=marker:
+" }}}
 
-" Bundles {
-" Vundle is short for "Vim Bundle" and is a Vim plugin manager
-" To set up Vundle:
-"   git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
+" Plugins {{{
+
+" Plug is a Vim plugin manager
+" To install Plug:
+"   mkdir -p ~/.vim/autoload
+"   curl -fLo ~/.vim/autoload/plug.vim https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 " To install the plugins in this file:
-"   Open vim
-"   Execute ":PluginInstall
+"   Open vim or nvim
+"   Execute :PlugInstall
 
-filetype off
+call plug#begin('~/.vim/plugged')
 
-if has("user_commands")
-    set rtp+=~/.nvim/bundle/vundle
-    runtime autoload/vundle.vim
+" Nice colors
+Plug 'altercation/vim-colors-solarized'
+"Plug 'jonathanfilip/vim-lucius'
+
+" File manager in vim
+Plug 'scrooloose/nerdtree'
+
+" Awesome status bar
+Plug 'bling/vim-airline'
+
+" Buffer manager and file search
+Plug 'kien/ctrlp.vim'
+
+" Toggle Comments Easily
+Plug 'scrooloose/nerdcommenter'
+
+" Fancy start screen
+Plug 'mhinz/vim-startify'
+
+" Smart Selection
+Plug 'gcmt/wildfire.vim'
+
+" Syntax Checker
+Plug 'scrooloose/syntastic'
+
+" Moving around the screen
+Plug 'Lokaltog/vim-easymotion'
+
+" Auto formating
+if v:version >= 703
+    Plug 'Chiel92/vim-autoformat'
 endif
-if exists("*vundle#begin()")
-    call vundle#begin()
 
-    " Vim package mangager
-    Plugin 'gmarik/vundle'
+" Haskell
+Plug 'bitc/vim-hdevtools'
 
-    " Nice colors
-    Plugin 'altercation/vim-colors-solarized'
-    "Plugin 'jonathanfilip/vim-lucius'
+" Edit surrounding things
+Plug 'tpope/vim-surround'
 
-    " File manager in vim
-    Plugin 'scrooloose/nerdtree'
+call plug#end()
+"endif
+" }}}
 
-    " Awesome status bar
-    Plugin 'bling/vim-airline'
-
-    " Buffer manager and file search
-    Plugin 'kien/ctrlp.vim'
-
-    " Toggle Comments Easily
-    Plugin 'scrooloose/nerdcommenter'
-
-    " Fancy start screen
-    Plugin 'mhinz/vim-startify'
-
-    " Smart Selection
-    Plugin 'gcmt/wildfire.vim'
-
-    " Syntax Checker
-    Plugin 'scrooloose/syntastic'
-
-    " Moving around the screen
-    Plugin 'Lokaltog/vim-easymotion'
-
-    " Auto formating
-    if v:version >= 703
-        Plugin 'Chiel92/vim-autoformat'
-    endif
-
-    " Haskell
-    Plugin 'bitc/vim-hdevtools'
-
-    " Edit surrounding things
-    Plugin 'tpope/vim-surround'
-
-    call vundle#end()
-endif
-" }
-
-" General {
+" General {{{
 
 set background=dark                 " Dark background
 filetype plugin indent on           " Automatically detect file types
@@ -89,21 +81,21 @@ set backupdir=/tmp
 "set autochdir                      " Change the terminal directory whenever I move buffers
 autocmd BufEnter * silent! lcd %:p:h
 
-"compilers {
+"compilers {{{
 autocmd FileType cpp set makeprg=make\ -f\ $HOME/.cppuseful/makefile
 autocmd FileType c set makeprg=make\ -f\ $HOME/.cuseful/makefile
 autocmd FileType haskell set makeprg=ghc\ --make
 autocmd FileType java set makeprg=javac
-" }
+" }}}
 
-" }
+" }}}
 
-" Vim UI {
+" Vim UI {{{
 
-" Set up the theme {
+" Set up the theme {{{
 silent! colorscheme solarized
 "silent! colorscheme lucius
-" }
+" }}}
 
 set t_Co=256                        " The terminal uses 256 colors
 
@@ -123,9 +115,9 @@ if has("colorcolumn")
 endif
 set foldmethod=syntax               " fold by syntax
 
-" }
+" }}}
 
-" Formating {
+" Formating {{{
 
 set autoindent                      " indent at the same level as the previous line
 set shiftwidth=4                    " the number of spaces for auto indent
@@ -138,14 +130,14 @@ set splitbelow                      " new hsplits are below
 
 set pastetoggle=<F12>               " Sane insertion
 
-" }
+" }}}
 
-" Key (re)Mappings {
+" Key (re)Mappings {{{
 
 " change the leader key
 let mapleader = ","
 
-" Shift key fixes {
+" Shift key fixes {{{
 command! -bang -nargs=* -complete=file E e<bang> <args>
 command! -bang -nargs=* -complete=file W w<bang> <args>
 command! -bang -nargs=* -complete=file Wq wq<bang> <args>
@@ -155,7 +147,7 @@ command! -bang WA wa<bang>
 command! -bang Q q<bang>
 command! -bang Qa qa<bang>
 command! -bang QA qa<bang>
-" }
+" }}}
 
 " toggle search highlighting
 nnoremap <silent> <leader>/ :set invhlsearch<CR>
@@ -183,16 +175,18 @@ nnoremap k gk
 nnoremap <C-l> :lnext<CR>
 nnoremap <C-h> :ll<CR>
 
+" Switch between c++98 and c++11
+autocmd FileType cpp,c nnoremap <buffer> <leader>t :call ToggleCpp11()<CR>
+
 " <F3>: compile current file to ./out
 autocmd FileType haskell nnoremap <buffer> <F3> :!ghc --make % -odir obj -hidir obj -o out<CR>
 autocmd FileType cpp,c nnoremap <buffer> <F3> :make SOURCES=%<CR>
-autocmd FileType cpp,c nnoremap <buffer> <leader>t :call ToggleCpp11()<CR>
 autocmd FileType java nnoremap <buffer> <F3> :make %<CR>
 autocmd FileType markdown nnoremap <buffer> <F3> :!pandoc -o "%:p:r".pdf %<CR>
 autocmd FileType tex nnoremap <buffer> <F3> :!pdflatex %<CR>
 
 " <F4>: compile all files in directory to ./out
-autocmd FileType cpp,c,haskell nnoremap <buffer> <F4> :make<CR>
+autocmd FileType cpp,c nnoremap <buffer> <F4> :make<CR>
 
 " <F5>: run precompiled file/script.
 autocmd FileType cpp,c,haskell nnoremap <buffer> <F5> :!./out
@@ -205,36 +199,36 @@ autocmd FileType cpp,c nnoremap <buffer> <F6> :!valgrind --tool=memcheck ./out
 autocmd FileType python nnoremap <buffer> <F6> :!python %<CR>
 autocmd FileType sh nnoremap <buffer> <F6> :!bash %<CR>
 
-" }
+" }}}
 
-"Plugins {
+"Plugins {{{
 
-" Airline {
+" Airline {{{
 "let g:airline_theme = 'solarized'
 let g:airline_theme = 'luna'
 "let g:airline_theme = 'sol'
 let g:airline#extensions#tabline#enabled = 1
-" }
+" }}}
 
-" Ctags {
+" Ctags {{{
 " Run ctags in current directory
 nnoremap <C-F12> :!ctags -R .<CR>:echo "Tagged all files in the project"<CR>
 nnoremap <C-\> :vsplit<CR>:exec("tag ".expand("<cword>"))<CR>
-" }
+" }}}
 
-" Ctrl-p {
-" }
+" Ctrl-p {{{
+" }}}
 
-" Eclim {
+" Eclim {{{
 autocmd FileType java nnoremap <buffer> <leader>3 :JavaCorrect<CR>
-" }
+" }}}
 
-" NerdTree {
+" NerdTree {{{
 map <C-e> :NERDTreeToggle<CR>:NERDTreeMirror<CR>
 let NERDTreeIgnore=['\.pyc', '\~$', '\.swo$', '\swp$', '\.git', '\.hg', '\.svn', '\.bzr']
-" }
+" }}}
 
-" Syntastic {
+" Syntastic {{{
 if executable("clang++")
     let g:syntastic_cpp_compiler = 'clang++'
 else
@@ -259,9 +253,9 @@ let g:syntastic_mode_map = { "mode": "passive" }
 
 command Ww w <BAR> SyntasticCheck
 command WW Ww
-"" }
+"" }}}
 
-" Vim-Autoformat {
+" Vim-Autoformat {{{
 
 let g:formatprg_cpp = "astyle"
 let g:formatprg_args_cpp = "--style=java --pad-oper --indent-col1-comments --unpad-paren --align-pointer=type --break-closing-brackets --convert-tabs --suffix=none"
@@ -274,39 +268,37 @@ let g:formatprg_java = "astyle"
 let g:formatprg_args_java = "--style=java --pad-oper --indent-col1-comments --unpad-paren --align-pointer=type --break-closing-brackets --convert-tabs --suffix=none"
 
 nnoremap <leader>f :Autoformat<CR><CR>
-" }
+" }}}
 
-" Vim-Hdevtools {
+" Vim-Hdevtools {{{
 au FileType haskell nnoremap <buffer> gt :HdevtoolsType<CR>
 au FileType haskell nnoremap <buffer> gc :HdevtoolsClear<CR>
-" }
+" }}}
 
-" Vim-startify {
+" Vim-startify {{{
 let g:startify_bookmarks = ['~/.nvimrc', '~/.vimrc', '~/.cppuseful']
 let g:startify_files_number = 5
 let g:startify_change_to_dir = 1
-" }
+" }}}
 
-" YouCompleteMe {
+" YouCompleteMe {{{
 "let g:ycm_global_ycm_extra_conf = '/home/jonathan/.cppuseful/.ycm_extra_conf.py'
 "let g:ycm_add_preview_to_completeopt = 1
 "let g:ycm_autoclose_preview_window_after_completion = 1
 "let g:ycm_show_diagnostics_ui = 1
 "let g:ycm_always_populate_location_list = 1
 "let g:ycm_collect_identifiers_from_tags_files = 1
-" }
+" }}}
 
-" }
+" }}}
 
-"Functions {
+"Functions {{{
 
-function EasyToCpp11()
+"function EasyToCpp11()
     " I don't like using parens around control statments
-
-    " If
-    %substitute/\(\<if\>\s*(.*)\s*{\)\@!\<if\>\s*\(.\{-}\)\s*{/if(\2) {/gce
-    %substitute/\(\<while\>\s*(.*)\s*{\)\@!\<while\>\s*\(.\{-}\)\s*{/while(\2) {/gce
-endfunction
+    "%substitute/\(\<if\>\s*(.*)\s*{\)\@!\<if\>\s*\(.\{-}\)\s*{/if(\2) {/gce
+    "%substitute/\(\<while\>\s*(.*)\s*{\)\@!\<while\>\s*\(.\{-}\)\s*{/while(\2) {/gce
+"endfunction
 
 function ForEachToFor()
     %substitute/\<for\>\s*(\s*\(\w\+\)\s*\(\w\+\)\s*:\s*\(\w\+\)\s*)\s*{/for(\1 \2 = \3.begin(); \2 != \3.end(); \2++) {/gce
