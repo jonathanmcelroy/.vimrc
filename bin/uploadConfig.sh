@@ -26,7 +26,7 @@ if ! git diff --cached --quiet; then
     git commit -m 'Updated configuration'
 fi
 
-if git diff --stat origin/master --quiet; then
+if ! git diff --stat origin/master --quiet; then
     git push
 fi
 
