@@ -2,7 +2,7 @@
 " vim: set sw=4 ts=4 sts=4 et tw=78 foldmarker={{{,}}} foldlevel=0 foldmethod=marker:
 " }}}
 
-" Plugins {{{
+" Plugins Init {{{
 
 " Plug is a Vim plugin manager
 " To install Plug:
@@ -34,7 +34,6 @@ else "{{{
 
     " Fancy start screen
     Plug 'mhinz/vim-startify'
-
 
     " Awesome status bar
     Plug 'bling/vim-airline'
@@ -80,6 +79,9 @@ else "{{{
 
     " Close surrounding things automagically
     Plug 'docunext/closetag.vim'
+
+    " Show tags in a window
+    Plug 'taglist.vim'
 
     " }}}
 
@@ -262,9 +264,9 @@ nnoremap <C-\> :vsplit<CR>:exec("tag ".expand("<cword>"))<CR>
 autocmd FileType java nnoremap <buffer> <leader>3 :JavaCorrect<CR>
 " }}}
 
-" Git Gutter {
+" Git Gutter {{{
 "call GitGutterEnable()
-" }
+" }}}
 
 " NerdTree {{{
 map <C-e> :NERDTreeToggle<CR>:NERDTreeMirror<CR>
@@ -292,7 +294,7 @@ let g:syntastic_c_compiler_options = '-Wall -pedantic -std=c11 -I'.$HOME.'/.cuse
 let g:syntastic_c_check_header = 1
 
 " Haskell
-let g:syntastic_haskell_hdevtools_args = '-g -Wall --make'
+let g:syntastic_haskell_hdevtools_args = '-g -Wall -g --make'
 
 " Java
 let g:syntastic_java_javac_classpath = 'src'
