@@ -16,13 +16,13 @@ let s:plugins=filereadable(expand("~/.vim/autoload/plug.vim", 1))
 
 if !s:plugins "{{{
     function! InstallPlug() "bootstrap plug.vim on new systems
-        silent call mkdir(expand("~/.nvim/autoload", 1), 'p')
-        exe '!curl -fLo '.expand("~/.nvim/autoload/plug.vim", 1).' https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+        silent call mkdir(expand("~/.vim/autoload", 1), 'p')
+        exe '!curl -fLo '.expand("~/.vim/autoload/plug.vim", 1).' https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
         " Line 889 is a bug. Replace with "if 1"
     endfunction
     "}}}
 else "{{{
-    call plug#begin('~/.nvim/plugged')
+    call plug#begin('~/.vim/plugged')
 
     " UI {{{
 
@@ -69,11 +69,17 @@ else "{{{
     " Smart Selection
     Plug 'gcmt/wildfire.vim'
 
+    " Snippets
+    Plug 'msanders/snipmate.vim'
+
     " Toggle Comments Easily
     Plug 'scrooloose/nerdcommenter'
 
     " Edit surrounding things
     Plug 'tpope/vim-surround'
+
+    " Close surrounding things automagically
+    Plug 'docunext/closetag.vim'
 
     " }}}
 
@@ -112,7 +118,7 @@ endif
 set backupdir=/tmp
 
 "set autochdir                      " Change the terminal directory whenever I move buffers
-autocmd BufEnter * silent! lcd %:p:h
+"autocmd BufEnter * silent! lcd %:p:h
 
 "compilers {{{
 autocmd FileType cpp set makeprg=make\ -f\ $HOME/.cppuseful/makefile
@@ -213,7 +219,7 @@ nnoremap <C-h> :ll<CR>
 autocmd FileType haskell nnoremap <buffer> <F3> :!ghc --make % -odir obj -hidir obj -o out<CR>
 autocmd FileType cpp,c nnoremap <buffer> <F3> :make SOURCES=%<CR>
 autocmd FileType cpp,c nnoremap <buffer> <leader>t :call ToggleCpp11()<CR>
-autocmd FileType java nnoremap <buffer> <F3> :make %<CR>
+"autocmd FileType java nnoremap <buffer> <F3> :make %<CR>
 autocmd FileType markdown nnoremap <buffer> <F3> :!pandoc -o "%:p:r".pdf %<CR>
 autocmd FileType tex nnoremap <buffer> <F3> :!pdflatex %<CR>
 
@@ -256,12 +262,18 @@ nnoremap <C-\> :vsplit<CR>:exec("tag ".expand("<cword>"))<CR>
 autocmd FileType java nnoremap <buffer> <leader>3 :JavaCorrect<CR>
 " }}}
 
+" Git Gutter {
+"call GitGutterEnable()
+" }
+
 " NerdTree {{{
 map <C-e> :NERDTreeToggle<CR>:NERDTreeMirror<CR>
 let NERDTreeIgnore=['\.pyc', '\~$', '\.swo$', '\swp$', '\.git', '\.hg', '\.svn', '\.bzr']
 " }}}
 
 " Syntastic {{{
+
+" C++
 if executable("clang++")
     let g:syntastic_cpp_compiler = 'clang++'
 else
@@ -270,6 +282,7 @@ endif
 let g:syntastic_cpp_compiler_options = '-Wall -pedantic -std=c++11 -I'.$HOME.'/.cppuseful/'
 let g:syntastic_cpp_check_header = 1
 
+" C
 if executable("clang")
     let g:syntastic_c_compiler = 'clang'
 else
@@ -278,14 +291,20 @@ endi
 let g:syntastic_c_compiler_options = '-Wall -pedantic -std=c11 -I'.$HOME.'/.cuseful/'
 let g:syntastic_c_check_header = 1
 
+" Haskell
 let g:syntastic_haskell_hdevtools_args = '-g -Wall --make'
 
+" Java
+let g:syntastic_java_javac_classpath = 'src'
+
+" Everything
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_jump = 1
 let g:syntastic_mode_map = { "mode": "passive" }
 
 command Ww w <BAR> SyntasticCheck
 command WW Ww
+
 "" }}}
 
 " Vim-Autoformat {{{
@@ -309,7 +328,7 @@ au FileType haskell nnoremap <buffer> gc :HdevtoolsClear<CR>
 " }}}
 
 " Vim-startify {{{
-let g:startify_bookmarks = ['~/.nvimrc', '~/.vimrc', '~/.cppuseful']
+let g:startify_bookmarks = ['~/.vimrc', '~/.cppuseful']
 let g:startify_files_number = 5
 let g:startify_change_to_dir = 1
 " }}}
