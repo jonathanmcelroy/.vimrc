@@ -84,13 +84,15 @@ export LANG=en_US.UTF-8
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias o="xdg-open"
 alias e="nvim"
-alias vim="nvim"
+if (( $+commands[nvim] )); then
+    alias vim="nvim"
+fi
 
 #bindkey -M emacs '^j' history-beginning-search-up
 #bindkey -M emacs '^k' history-beginning-search-down
 
 # pacman aliases
-if (( $+commands[pacman] )) ; then
+if (( $+commands[pacman] )); then
     alias pacinfo='pacman -Si'
     alias pacinstall='sudo pacman -S'
     alias pacsearch='pacman -Ss'
