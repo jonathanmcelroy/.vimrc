@@ -77,11 +77,11 @@ else "{{{
     " Edit surrounding things
     Plug 'tpope/vim-surround'
 
-    " Close surrounding things automagically
-    Plug 'docunext/closetag.vim'
-
     " Show tags in a window
-    Plug 'taglist.vim'
+    Plug 'majutsushi/tagbar'
+
+    " Code completion
+    "Plug 'Valloric/YouCompleteMe'
 
     " }}}
 
@@ -91,6 +91,9 @@ else "{{{
     Plug 'bitc/vim-hdevtools', { 'for' : 'haskell' }
 
     " }}}
+
+    " Close surrounding things automagically
+    Plug 'docunext/closetag.vim', { 'for' : 'html' }
 
     call plug#end()
 endif
@@ -253,7 +256,7 @@ let g:airline#extensions#tabline#enabled = 1
 " Ctags {{{
 " Run ctags in current directory
 "nnoremap <C-F12> :!ctags -R .<CR>:echo "Tagged all files in the project"<CR>
-nnoremap <leader>tag :!ctags -R .<CR>
+nnoremap <leader>tag :!ctags . -R<CR>
 nnoremap <C-\> :vsplit<CR>:exec("tag ".expand("<cword>"))<CR>
 " }}}
 
@@ -290,7 +293,7 @@ if executable("clang")
 else
     let g:syntastic_c_compiler = 'gcc'
 endi
-let g:syntastic_c_compiler_options = '-Wall -pedantic -std=c11 -I'.$HOME.'/.cuseful/'
+let g:syntastic_c_compiler_options = '-Wall -pedantic -std=c99 -I'.$HOME.'/.cuseful/'
 let g:syntastic_c_check_header = 1
 
 " Haskell
@@ -308,6 +311,40 @@ command Ww w <BAR> SyntasticCheck
 command WW Ww
 
 "" }}}
+
+" Tagbar {{{
+let g:tagbar_type_haskell = {
+            \ 'ctagsbin'  : 'hasktags',
+            \ 'ctagsargs' : '-x -c -o-',
+            \ 'kinds'     : [
+            \  'm:modules:0:1',
+            \  'd:data: 0:1',
+            \  'd_gadt: data gadt:0:1',
+            \  't:type names:0:1',
+            \  'nt:new types:0:1',
+            \  'c:classes:0:1',
+            \  'cons:constructors:1:1',
+            \  'c_gadt:constructor gadt:1:1',
+            \  'c_a:constructor accessors:1:1',
+            \  'ft:function types:1:1',
+            \  'fi:function implementations:0:1',
+            \  'o:others:0:1'
+            \ ],
+            \ 'sro'        : '.',
+            \ 'kind2scope' : {
+            \ 'm' : 'module',
+            \ 'c' : 'class',
+            \ 'd' : 'data',
+            \ 't' : 'type'
+            \ },
+            \ 'scope2kind' : {
+            \ 'module' : 'm',
+            \ 'class'  : 'c',
+            \ 'data'   : 'd',
+            \ 'type'   : 't'
+            \ }
+            \ }
+" }}}
 
 " Vim-Autoformat {{{
 
@@ -378,3 +415,7 @@ function! ToggleCpp11()
 endfunction
 
 " }}}
+
+inorea cfun <c-r>=IMAP_PutTextWithMovement("hello <++> world <++>")<CR>
+
+imap <C-q> <C-]>
