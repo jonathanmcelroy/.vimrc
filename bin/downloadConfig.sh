@@ -10,14 +10,20 @@ else
     git pull
 fi
 
-if ! [ -d $HOME/.vim/bundle/vundle ]; then
-    git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/vundle
+if ! [ -d "$HOME/.vim/autoload" ] ;then
+    mkdir -p "$HOME/.vim/autoload"
+    curl -fLo "$HOME/.vim/autoload/plug.vim https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
 fi
 
-cp .vimrc ~/.vimrc
-cp .zshrc ~/.zshrc
-cp .cppuseful/ ~/.cppuseful -r
-cp .cuseful/ ~/.cuseful -r
+#if ! [ -d $HOME/.vim/bundle/vundle ]; then
+    #git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/vundle
+#fi
+
+cp .vimrc "$HOME/.vimrc"
+cp .zshrc "$HOME/.zshrc"
+cp notes.txt "$HOME/notes.txt"
+cp .cppuseful/ "$HOME" -rf
+cp .cuseful/ "$HOME" -rf
 
 mkdir -p $HOME/bin
 find ./bin -perm /a+x -type f -exec cp {} $HOME/bin/ \;
