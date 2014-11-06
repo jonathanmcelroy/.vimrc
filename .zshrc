@@ -82,12 +82,13 @@ export LANG=en_US.UTF-8
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-alias o="xdg-open"
-alias e="nvim"
-alias vim="nvim"
 
-#bindkey -M emacs '^j' history-beginning-search-up
-#bindkey -M emacs '^k' history-beginning-search-down
+alias o="xdg-open"
+if (( $+commands[pacman] )); then
+    alias e="nvim"
+    alias vim="nvim"
+else
+    alias e="vim"
 
 # pacman aliases
 if (( $+commands[pacman] )) ; then
@@ -98,6 +99,4 @@ if (( $+commands[pacman] )) ; then
 fi
 
 # 256 colors
-case "$TERM" in
-    xterm*) TERM=xterm-256color
-esac 
+# case "$TERM" in

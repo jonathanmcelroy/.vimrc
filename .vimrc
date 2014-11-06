@@ -2,12 +2,16 @@
 " vim: set sw=4 ts=4 sts=4 et tw=78 foldmarker={{{,}}} foldlevel=0 foldmethod=marker:
 " }}}
 
+if has('nvim')
+    runtime! plugin/python_setup.vim
+endif
+
 " Plugins Init {{{
 
 " Plug is a Vim plugin manager
 " To install Plug:
-"   mkdir -p ~/.nvim/autoload
-"   curl -fLo ~/.nvim/autoload/plug.vim https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+"   mkdir -p ~/.vim/autoload
+"   curl -fLo ~/.vim/autoload/plug.vim https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 " To install the plugins in this file:
 "   Open vim or nvim
 "   Execute :PlugInstall
@@ -81,7 +85,7 @@ else "{{{
     Plug 'majutsushi/tagbar'
 
     " Code completion
-    "Plug 'Valloric/YouCompleteMe'
+    Plug 'Valloric/YouCompleteMe'
 
     " }}}
 
@@ -94,6 +98,9 @@ else "{{{
 
     " Close surrounding things automagically
     Plug 'docunext/closetag.vim', { 'for' : 'html' }
+
+    "Mine :)
+    Plug '~/Documents/neovimGTK'
 
     call plug#end()
 endif
