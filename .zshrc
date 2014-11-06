@@ -89,6 +89,7 @@ if (( $+commands[pacman] )); then
     alias vim="nvim"
 else
     alias e="vim"
+fi
 
 # pacman aliases
 if (( $+commands[pacman] )) ; then

@@ -73,7 +73,9 @@ else "{{{
     Plug 'gcmt/wildfire.vim'
 
     " Snippets
-    Plug 'msanders/snipmate.vim'
+    "Plug 'msanders/snipmate.vim'
+    Plug 'SirVer/ultisnips'
+    Plug 'honza/vim-snippets'
 
     " Toggle Comments Easily
     Plug 'scrooloose/nerdcommenter'
@@ -86,6 +88,9 @@ else "{{{
 
     " Code completion
     Plug 'Valloric/YouCompleteMe'
+
+    " Code searching
+    Plug 'mileszs/ack.vim'
 
     " }}}
 
@@ -119,6 +124,8 @@ set virtualedit=onemore             " Allows the cursor beyond the last characte
 set history=1000                    " A lot of history
 
 set hidden                          " Allow buffer switching without saving
+
+set backspace=indent,eol,start      " Backspace should work like a text editor
 
 set undolevels=1000                 " Max number of changes to save
 if has("persistant_undo")
@@ -162,9 +169,9 @@ set smartcase                       " Uppercase only matches upper
 set wildmenu                        " Auto completion menu for commands
 set wildmode=list:longest,full      " List matches, then longest common part, then all
 
-if has("colorcolumn")
-    set colorcolumn=81                  " highlight everything past the 80th column
-endif
+"if has("colorcolumn")
+"set colorcolumn=81                  " highlight everything past the 80th column
+"endif
 set foldmethod=syntax               " fold by syntax
 
 " }}}
@@ -204,6 +211,10 @@ command! -bang QA qa<bang>
 " toggle search highlighting
 nnoremap <silent> <leader>/ :set invhlsearch<CR>
 
+" Exit insert mode
+inoremap jk <Esc>
+inoremap kj <Esc>
+
 " Make Y do the same as D, but for yanking
 nnoremap Y y$
 
@@ -236,11 +247,12 @@ autocmd FileType markdown nnoremap <buffer> <F3> :!pandoc -o "%:p:r".pdf %<CR>
 autocmd FileType tex nnoremap <buffer> <F3> :!pdflatex %<CR>
 
 " <F4>: compile all files in directory to ./out
-autocmd FileType cpp,c,haskell nnoremap <buffer> <F4> :make<CR>
+autocmd FileType cpp,c nnoremap <buffer> <F4> :make<CR>
+autocmd FileType haskell nnoremap <buffer> <F4> :!ghc --make % -odir obj -hidir obj -o out<CR>
 
 " <F5>: run precompiled file/script.
 autocmd FileType cpp,c,haskell nnoremap <buffer> <F5> :!./out
-autocmd FileType java nnoremap <buffer> <F5> :!java %:t:r<CR>
+"autocmd FileType java nnoremap <buffer> <F5> :!java %:t:r<CR>
 autocmd FileType python nnoremap <buffer> <F5> :!python %<CR>
 autocmd FileType sh nnoremap <buffer> <F5> :!bash %<CR>
 
@@ -258,6 +270,10 @@ autocmd FileType sh nnoremap <buffer> <F6> :!bash %<CR>
 let g:airline_theme = 'luna'
 "let g:airline_theme = 'sol'
 let g:airline#extensions#tabline#enabled = 1
+" }}}
+
+" Ack {{{
+let g:ackprg = 'ag --nogroup --nocolor --column'
 " }}}
 
 " Ctags {{{
@@ -310,7 +326,11 @@ let g:syntastic_haskell_hdevtools_args = '-g -Wall -g --make'
 let g:syntastic_java_javac_classpath = 'src'
 
 " Everything
+let g:syntastic_enable_signs = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
 let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_enable_balloons = 1
 let g:syntastic_auto_jump = 1
 let g:syntastic_mode_map = { "mode": "passive" }
 
@@ -353,6 +373,12 @@ let g:tagbar_type_haskell = {
             \ }
 " }}}
 
+" Ultisnips {{{
+let g:UltiSnipsExpandTrigger = "<c-a>"
+let g:UltiSnipsJumpForwardTrigger="<c-a>"
+let g:UltiSnipsJumpBackwardTrigger="<c-s>"
+" }}}
+
 " Vim-Autoformat {{{
 
 let g:formatprg_cpp = "astyle"
@@ -380,12 +406,31 @@ let g:startify_change_to_dir = 1
 " }}}
 
 " YouCompleteMe {{{
-"let g:ycm_global_ycm_extra_conf = '/home/jonathan/.cppuseful/.ycm_extra_conf.py'
+let g:ycm_register_as_syntastic_checker = 1
+
+"YCM will put icons in Vim's gutter on lines that have a diagnostic set.
+"Turning this off will also turn off the YcmErrorLine and YcmWarningLine
+"highlighting
+let g:ycm_enable_diagnostic_signs = 1
+let g:ycm_enable_diagnostic_highlighting = 0
+let g:ycm_always_populate_location_list = 1 "default 0
+let g:ycm_open_loclist_on_ycm_diags = 1 "default 1
+
+let g:ycm_complete_in_strings = 1 "default 1
+let g:ycm_collect_identifiers_from_tags_files = 1 "default 0
+let g:ycm_path_to_python_interpreter = '' "default ''
+
+let g:ycm_server_use_vim_stdout = 0 "default 0 (logging to console)
+let g:ycm_server_log_level = 'info' "default info
+
+let g:ycm_global_ycm_extra_conf = $HOME.'/.cppuseful/.ycm_extra_conf.py'
+let g:ycm_confirm_extra_conf = 1
+
+let g:ycm_goto_buffer_command = 'same-buffer' "[ 'same-buffer', 'horizontal-split', 'vertical-split', 'new-tab' ]
+let g:ycm_filetype_whitelist = { '*': 1 }
+"let g:ycm_key_invoke_completion = '<C-Space>'
+
 "let g:ycm_add_preview_to_completeopt = 1
-"let g:ycm_autoclose_preview_window_after_completion = 1
-"let g:ycm_show_diagnostics_ui = 1
-"let g:ycm_always_populate_location_list = 1
-"let g:ycm_collect_identifiers_from_tags_files = 1
 " }}}
 
 " }}}
@@ -422,7 +467,3 @@ function! ToggleCpp11()
 endfunction
 
 " }}}
-
-inorea cfun <c-r>=IMAP_PutTextWithMovement("hello <++> world <++>")<CR>
-
-imap <C-q> <C-]>

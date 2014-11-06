@@ -1,0 +1,19 @@
+vim: set foldmarker={{,}} foldlevel=0 foldmethod=marker:
+
+Operating Systems {{
+    Do program4 for Nov 11
+}}
+
+Data Communications {{
+}}
+
+Database Design {{
+    Do homework for Nov 6
+}}
+
+Intro to Analysis {{
+}}
+
+Colloquium {{
+    Do essay before Nov 7, 5:00 PM
+}}
