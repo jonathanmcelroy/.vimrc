@@ -7,6 +7,7 @@ CC 			= g++
 endif
 CC_FLAGS	= -Wall -pedantic -g -I $(HOME)/.cppuseful/ -std=c++11
 #CC_LINK		= -lGL -lGLU -lglut -lpthread
+CC_LINK     = -lcurl
 
 # Filenames
 EXEC		= out

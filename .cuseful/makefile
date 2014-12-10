@@ -1,7 +1,8 @@
+SHELL 		= bash
 CC			= gcc
 #CC_FLAGS	= -Wall -g -I $(HOME)/.cppuseful/ -std=c99
 CC_FLAGS	= -Wall -ansi -pedantic -std=c99
-CC_LINK		= -lpthread
+CC_LINK		= -lpthread -lcurl
 
 # Filenames
 EXEC		= out

@@ -2,10 +2,6 @@
 " vim: set sw=4 ts=4 sts=4 et tw=78 foldmarker={{{,}}} foldlevel=0 foldmethod=marker:
 " }}}
 
-if has('nvim')
-    runtime! plugin/python_setup.vim
-endif
-
 " Plugins Init {{{
 
 " Plug is a Vim plugin manager
@@ -84,13 +80,22 @@ else "{{{
     Plug 'tpope/vim-surround'
 
     " Show tags in a window
-    Plug 'majutsushi/tagbar'
+    "Plug 'majutsushi/tagbar'
 
     " Code completion
-    Plug 'Valloric/YouCompleteMe'
+    "Plug 'Valloric/YouCompleteMe'
 
     " Code searching
     Plug 'mileszs/ack.vim'
+
+    " Undo Tree
+    Plug 'sjl/gundo.vim'
+
+    " Align text
+    Plug 'godlygeek/tabular'
+
+    " Latex
+    "Plug 'vim-latex/vim-latex', { 'for' : 'tex' }
 
     " }}}
 
@@ -129,15 +134,17 @@ set backspace=indent,eol,start      " Backspace should work like a text editor
 
 set undolevels=1000                 " Max number of changes to save
 if has("persistant_undo")
-    set undofile                        " Persistent undo
-    set undodir=~/.vim/undo             " Where to place the undo files
-    set undoreload=10000                " Max number of lines to save for undo on a buffer reload
+    set undofile                    " Persistent undo
+    set undodir=~/.vim/undo         " Where to place the undo files
+    set undoreload=10000            " Max number of lines to save for undo on a buffer reload
 endif
 
 set backupdir=/tmp
 
 "set autochdir                      " Change the terminal directory whenever I move buffers
 "autocmd BufEnter * silent! lcd %:p:h
+
+set shell=/bin/bash
 
 "compilers {{{
 autocmd FileType cpp set makeprg=make\ -f\ $HOME/.cppuseful/makefile
@@ -188,6 +195,9 @@ set splitright                      " new vsplits are to the right
 set splitbelow                      " new hsplits are below
 
 set pastetoggle=<F12>               " Sane insertion
+
+" Folding for java
+syn region foldJavadoc start=,/\*\*, end=,\*/, transparent fold keepend
 
 " }}}
 

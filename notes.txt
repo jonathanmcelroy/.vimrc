@@ -1,19 +1,24 @@
 vim: set foldmarker={{,}} foldlevel=0 foldmethod=marker:
 
+Add my other OS to grub
+
 Operating Systems {{
-    Do program4 for Nov 11
+    Do program 6
+    Do program 7
 }}
 
 Data Communications {{
 }}
 
 Database Design {{
-    Do homework for Nov 6
 }}
 
 Intro to Analysis {{
 }}
 
 Colloquium {{
-    Do essay before Nov 7, 5:00 PM
+}}
+
+Competative Learning {{
+    Do convex hull thing
 }}
