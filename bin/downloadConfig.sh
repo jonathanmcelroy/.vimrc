@@ -25,6 +25,7 @@ fi
 echo "Copying over files"
 cp .vimrc "$HOME/.vimrc"
 cp .zshrc "$HOME/.zshrc"
+cp notes.txt "$HOME/notes.txt"
 cp .cppuseful/ "$HOME" -rf
 cp .cuseful/ "$HOME" -rf
 
