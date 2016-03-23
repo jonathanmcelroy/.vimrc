@@ -10,7 +10,6 @@ fi
 
 cp ~/.vimrc .
 cp ~/.zshrc .
-cp ~/notes.txt .
 cp ~/.cppuseful/ . -r
 cp ~/.cuseful/ . -r
 
