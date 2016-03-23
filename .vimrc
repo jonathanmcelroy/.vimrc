@@ -37,6 +37,7 @@ else "{{{
 
     " Awesome status bar
     Plug 'bling/vim-airline'
+    Plug 'vim-airline/vim-airline-themes'
 
     " }}}
 
@@ -99,10 +100,16 @@ else "{{{
 
     " }}}
 
-    " Haskell {{{
+    " Languages {{{
 
-    " Syntax checking
+    " Haskell syntax checking
     Plug 'bitc/vim-hdevtools', { 'for' : 'haskell' }
+    
+    " Javascript syntax checking
+    Plug 'pangloss/vim-javascript', { 'for' : 'javascript' }
+
+    " Rust syntax checking
+    Plug 'rust-lang/rust.vim'
 
     " }}}
 

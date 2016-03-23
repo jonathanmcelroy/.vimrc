@@ -1,0 +1,24 @@
+#!/bin/bash
+
+temp_dir=$(mktemp -d)
+result_files=""
+for var in "$@"; do
+    if [[ $var == *.md ]]; then
+        temp_file="$temp_dir"/$(basename "$var" .md).html
+        echo $temp_file
+        markdown-calibre "$var" |
+            sed "s/Ā/\&#256/g" | sed "s/ā/\&#257/g" |
+            sed "s/Ē/\&#274/g" | sed "s/ē/\&#275/g" |
+            sed "s/Ī/\&#298/g" | sed "s/ī/\&#299/g" |
+            sed "s/Ō/\&#332/g" | sed "s/ō/\&#333/g" |
+            sed "s/Ū/\&#362/g" | sed "s/ū/\&#363/g" |
+            sed "s/Á/A/g"      | sed "s/á/a/g" |
+            sed "s/É/E/g"      | sed "s/é/e/g" |
+            sed "s/Í/I/g"      | sed "s/í/i/g" |
+            sed "s/Ó/O/g"      | sed "s/ó/o/g" |
+            sed "s/Ú/U/g"      | sed "s/ú/u/g" > "$temp_file"
+        result_files+=" $temp_file"
+    fi
+done
+echo "$result_files"
+echo "$result_files" | xargs chromium
