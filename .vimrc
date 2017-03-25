@@ -12,16 +12,16 @@
 "   Open vim or nvim
 "   Execute :PlugInstall
 
-let s:plugins=filereadable(expand("~/.local/share/nvim/site/autoload/plug.vim", 1))
+let s:plugins=filereadable(expand("~/vimfiles/autoload/plug.vim", 1))
 
 if !s:plugins "{{{
     function! InstallPlug() "bootstrap plug.vim on new systems
-        silent call mkdir(expand("~/.local/share/nvim/site/autoload/plug.vim", 1), 'p')
-        exe '!curl -fLo '.expand("~/.local/share/nvim/site/autoload/plug.vim", 1).' --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+        silent call mkdir(expand("~/vimfiles/autoload/plug.vim", 1), 'p')
+        exe '!curl -fLo '.expand("~/vimfiles/autoload/plug.vim", 1).' --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
     endfunction
     "}}}
 else "{{{
-    call plug#begin('~/.local/share/nvim/plugged')
+    call plug#begin('~/vimfiles/plugged')
     " Missing elm-vim, neco-ghc, vim-flow, vim-jsx, vim-racer, yats.vim,
     " YouCompleteMe
 
@@ -147,12 +147,23 @@ if has("persistant_undo")
     set undoreload=10000            " Max number of lines to save for undo on a buffer reload
 endif
 
-set backupdir=/tmp
+if has("win32")
+    set backupdir=$TEMP,$TMP,.
+    set directory=$TEMP,$TMP,.
+else
+    set backupdir=/tmp
+    set directory=/tmp
+endif
 
 "set autochdir                      " Change the terminal directory whenever I move buffers
 "autocmd BufEnter * silent! lcd %:p:h
 
-set shell=/bin/bash
+if has("win32")
+    set noshelltemp
+    "set shell=powershell
+else
+    set shell=/bin/bash
+endif
 
 "compilers {{{
 autocmd FileType cpp set makeprg=make\ -f\ $HOME/.cppuseful/makefile
@@ -160,6 +171,8 @@ autocmd FileType c set makeprg=make\ -f\ $HOME/.cuseful/makefile
 autocmd FileType haskell set makeprg=ghc\ --make
 autocmd FileType java set makeprg=javac
 " }}}
+
+set belloff=all
 
 " }}}
 
@@ -183,6 +196,10 @@ set ignorecase                      " Lowercase matches both lower and upper
 set smartcase                       " Uppercase only matches upper
 set wildmenu                        " Auto completion menu for commands
 set wildmode=list:longest,full      " List matches, then longest common part, then all
+set guioptions-=m                   " Remove the menu
+set guioptions-=T                   " Remove tool bar
+set guioptions-=L                   " Remove scroll bar on left of split window
+set guioptions-=r                   " Remove scroll bar on right
 
 "if has("colorcolumn")
 "set colorcolumn=81                  " highlight everything past the 80th column
@@ -194,10 +211,10 @@ set foldmethod=syntax               " fold by syntax
 " Formating {{{
 
 set autoindent                      " indent at the same level as the previous line
-set shiftwidth=4                    " the number of spaces for auto indent
+set shiftwidth=2                    " the number of spaces for auto indent
 set expandtab                       " new tabs are spaces
-set tabstop=4                       " the number of columns when tab is pressed
-set softtabstop=4                   " Let backspace delete indent
+set tabstop=2                       " the number of columns when tab is pressed
+set softtabstop=2                   " Let backspace delete indent
 
 set splitright                      " new vsplits are to the right
 set splitbelow                      " new hsplits are below
@@ -302,6 +319,10 @@ nnoremap <C-\> :vsplit<CR>:exec("tag ".expand("<cword>"))<CR>
 " }}}
 
 " Ctrl-p {{{
+let g:ctrlp_custom_ignore = {
+    \ 'dir': 'node_modules\|target',
+    \ 'file': '\v\.r$'
+    \ }
 " }}}
 
 " Eclim {{{
@@ -310,6 +331,12 @@ autocmd FileType java nnoremap <buffer> <leader>3 :JavaCorrect<CR>
 
 " Git Gutter {{{
 "call GitGutterEnable()
+" }}}
+
+" {{{ JSHint
+if has("win32")
+    let jshint2_command = "C:/Users/Administrator/AppData/Roaming/npm/jshint"
+endif
 " }}}
 
 " NerdTree {{{
@@ -352,8 +379,8 @@ let g:syntastic_enable_balloons = 1
 let g:syntastic_auto_jump = 1
 let g:syntastic_mode_map = { "mode": "passive" }
 
-command Ww w <BAR> SyntasticCheck
-command WW Ww
+command! Ww w <BAR> SyntasticCheck
+command! WW Ww
 
 "" }}}
 
@@ -418,7 +445,7 @@ au FileType haskell nnoremap <buffer> gc :HdevtoolsClear<CR>
 " }}}
 
 " Vim-startify {{{
-let g:startify_bookmarks = ['~/.vimrc', '~/.cppuseful']
+let g:startify_bookmarks = ['~/_vimrc', '~/.cppuseful', '~/vimfiles/bundle/openedgeabl.vim/plugin/openedgeabl.vim']
 let g:startify_files_number = 5
 let g:startify_change_to_dir = 1
 " }}}
@@ -450,38 +477,5 @@ let g:ycm_filetype_whitelist = { '*': 1 }
 
 "let g:ycm_add_preview_to_completeopt = 1
 " }}}
-
-" }}}
-
-"Functions {{{
-
-function EasyToCpp11()
-    " I don't like using parens around control statments
-
-    " If
-    %substitute/\(\<if\>\s*(.*)\s*{\)\@!\<if\>\s*\(.\{-}\)\s*{/if(\2) {/gce
-    %substitute/\(\<while\>\s*(.*)\s*{\)\@!\<while\>\s*\(.\{-}\)\s*{/while(\2) {/gce
-endfunction
-
-function ForEachToFor()
-    %substitute/\<for\>\s*(\s*\(\w\+\)\s*\(\w\+\)\s*:\s*\(\w\+\)\s*)\s*{/for(\1 \2 = \3.begin(); \2 != \3.end(); \2++) {/gce
-endfunction
-
-let cpp11 = 1
-function! ToggleCpp11()
-    if g:cpp11
-        nnoremap <buffer> <F3> :make SOURCES=% CPP11=<CR>
-        nnoremap <buffer> <F4> :make CPP11=<CR>
-        let g:syntastic_cpp_compiler_options = '-Wall -pedantic -I'.$HOME.'/.cppuseful/'
-        let g:syntastic_c_compiler_options = '-Wall -pedantic -std=c99 -I'.$HOME.'/.cuseful/'
-        let g:cpp11 = 0
-    else
-        nnoremap <buffer> <F3> :make SOURCES=%<CR>
-        nnoremap <buffer> <F4> :make<CR>
-        let g:syntastic_cpp_compiler_options = '-Wall -pedantic -std=c++11 -I'.$HOME.'/.cppuseful/'
-        let g:syntastic_c_compiler_options = '-Wall -pedantic -std=c11 -I'.$HOME.'/.cuseful/'
-        let g:cpp11 = 1
-    endif
-endfunction
 
 " }}}
