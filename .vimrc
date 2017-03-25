@@ -12,17 +12,18 @@
 "   Open vim or nvim
 "   Execute :PlugInstall
 
-let s:plugins=filereadable(expand("~/.vim/autoload/plug.vim", 1))
+let s:plugins=filereadable(expand("~/.local/share/nvim/site/autoload/plug.vim", 1))
 
 if !s:plugins "{{{
     function! InstallPlug() "bootstrap plug.vim on new systems
-        silent call mkdir(expand("~/.vim/autoload", 1), 'p')
-        exe '!curl -fLo '.expand("~/.vim/autoload/plug.vim", 1).' https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-        " Line 889 is a bug. Replace with "if 1"
+        silent call mkdir(expand("~/.local/share/nvim/site/autoload/plug.vim", 1), 'p')
+        exe '!curl -fLo '.expand("~/.local/share/nvim/site/autoload/plug.vim", 1).' --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
     endfunction
     "}}}
 else "{{{
-    call plug#begin('~/.vim/plugged')
+    call plug#begin('~/.local/share/nvim/plugged')
+    " Missing elm-vim, neco-ghc, vim-flow, vim-jsx, vim-racer, yats.vim,
+    " YouCompleteMe
 
     " UI {{{
 
