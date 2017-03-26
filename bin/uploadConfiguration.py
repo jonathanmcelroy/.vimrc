@@ -51,29 +51,24 @@ try:
             copy(join(home, 'bin', eachfile), join(worktree, 'bin'))
 
     print("Deleting files from git")
-    #configuration.index.add('.')
-    deletedFiles = configuration.git.ls_files('--deleted', '-z')
-    print(deletedFiles)
+    configuration.git.add('.')
+    #deletedFiles = configuration.git.ls_files('--deleted', '-z')
     #if deletedFiles != "":
-        # configuration.index.rm(deletedFiles)
+        #deletedFilesList = deletedFiles.split('\x00')[:-1]
+        #configuration.index.remove(deletedFilesList)
 
     print("Commiting git")
     try:
         configuration.git.diff('--cached', '--quiet')
     except GitCommandError as E:
-        print("Must commit")
-    #if ! git diff --cached --quiet; then
-        #git commit -m 'Updated configuration'
-    #fi
+        configuration.git.commit('-m', 'Updated configuration')
 
     print("Pushing git")
     try: 
         configuration.git.diff('--stat', 'origin/master', '--quiet')
     except GitCommandError as E:
-        print("Must push")
-    #if ! git diff --stat origin/master --quiet; then
-        #git push
-    #fi
+        configuration.git.push()
+
 except Exception as E:
     print("Exception occured")
     import traceback
