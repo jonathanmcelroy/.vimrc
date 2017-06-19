@@ -32,6 +32,7 @@ else "{{{
     Plug 'jonathanfilip/vim-lucius'
     Plug 'junegunn/seoul256.vim'
     Plug 'john2x/flatui.vim'
+    Plug 'tomasr/molokai'
 
     " Fancy start screen
     Plug 'mhinz/vim-startify'
@@ -111,14 +112,22 @@ else "{{{
 
     " Rust syntax checking
     Plug 'rust-lang/rust.vim'
+    " TODO: Racer
+    
+    " Typescript
+    Plug 'leafgarland/typescript-vim'
 
     " }}}
 
     " Close surrounding things automagically
     Plug 'docunext/closetag.vim', { 'for' : 'html' }
 
+    " Manage a wiki from vim
+    Plug 'vimwiki/vimwiki'
+
     "Mine :)
     Plug '~/Documents/neovimGTK'
+    Plug '~/Documents/openedgeabl.vim'
 
     call plug#end()
 endif
@@ -159,7 +168,7 @@ endif
 "autocmd BufEnter * silent! lcd %:p:h
 
 if has("win32")
-    set noshelltemp
+    " set noshelltemp
     "set shell=powershell
 else
     set shell=/bin/bash
@@ -174,6 +183,12 @@ autocmd FileType java set makeprg=javac
 
 set belloff=all
 
+" Turn on tags for rust
+autocmd BufRead *.rs :setlocal tags=./rusty-tags.vi;/
+autocmd BufWrite *.rs :silent! exec "!rusty-tags vi --quiet --start-dir=" . expand('%:p:h') . "&"
+
+set grepprg=rg\ --vimgrep
+
 " }}}
 
 " Vim UI {{{
@@ -181,7 +196,8 @@ set belloff=all
 " Set up the theme {{{
 "silent! colorscheme solarized
 "silent! colorscheme lucius
-silent! colorscheme seoul256
+"silent! colorscheme seoul256
+colorscheme molokai
 " }}}
 
 set t_Co=256                        " The terminal uses 256 colors
@@ -205,6 +221,10 @@ set guioptions-=r                   " Remove scroll bar on right
 "set colorcolumn=81                  " highlight everything past the 80th column
 "endif
 set foldmethod=syntax               " fold by syntax
+
+if has('gui_running')
+    set guifont=Lucida_Console:h11:cANSI:qDRAFT
+endif
 
 " }}}
 
@@ -308,7 +328,7 @@ let g:airline#extensions#tabline#enabled = 1
 " }}}
 
 " Ack {{{
-let g:ackprg = 'ag --nogroup --nocolor --column'
+let g:ackprg = 'rg --vimgrep'
 " }}}
 
 " Ctags {{{
@@ -323,6 +343,9 @@ let g:ctrlp_custom_ignore = {
     \ 'dir': 'node_modules\|target',
     \ 'file': '\v\.r$'
     \ }
+
+nnoremap <leader>. :CtrlPTag<CR>
+
 " }}}
 
 " Eclim {{{
